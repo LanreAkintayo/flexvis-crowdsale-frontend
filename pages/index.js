@@ -214,7 +214,7 @@ export default function Home() {
             />
           </div>
         </div>
-        <p className="mt-4">© 2022 Made by LarryCodes</p>
+        <p className="mt-4 text-sm">© 2022 Made by LarryCodes</p>
       </footer>
     </>
   );
