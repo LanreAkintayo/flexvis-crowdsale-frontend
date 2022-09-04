@@ -55,7 +55,7 @@ export default function PageInfo() {
 
             <div className="py-4">
               <h1 className="text-4xl text-gray-800 pt-10 pb-4">Why do I need this fund?</h1>
-              <p>So, they always say that everyone has a purpose of being in this earth. It took me a very long time before I discovered my purpose of existing on earth. After pondering over and over, I decided that before I die, I'm gonna fulfill the purpose of my existence. <br/><br/> So, My purpose is to travel to all the planet in the world.</p>
+              <p>So, they always say that everyone has a purpose of being in this earth. It took me a very long time before I discovered my purpose of existing on earth. After pondering over and over, I decided that before I die, I'm gonna fulfill the purpose of my existence. <br/><br/> So, My purpose is to travel to all the planet in the world. We all know that we currently have two planets that we can live in, that is Earth and Mars.</p>
             </div>
           </div>
           <div className="mx-8 w-5/12 px-8">
