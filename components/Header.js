@@ -2,7 +2,7 @@ export default function () {
   return (
     <div className="h-20">
     {/* Navbar */}
-    <nav className="flex items-center px-4 py-4 h-full text-white bg-black ">
+    <nav className="flex items-center px-4 py-4 h-full text-white bg-zinc-800 ">
       <p className="w-5/12 font-logo text-3xl">
         <span className="text-orange-700">L</span>arry
         <span className="text-orange-700">C</span>odes
