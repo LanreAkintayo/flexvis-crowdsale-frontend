@@ -43,14 +43,29 @@ export default function SupportModal() {
                   Select Token to Pledge with
                 </p>
                 <Dropdown />
-               {/* <Dropdown3 /> */}
+                {/* <Dropdown3 /> */}
+              </div>
+              <div className="my-5 w-full flex flex-col ">
+                <p className="text-gray-600 text-sm py-2">Enter Amount</p>
+                <div className="w-full flex flex-col border rounded-md p-2">
+                  <input
+                    type="text"
+                    name="text"
+                    id="text"
+                    placeholder="0.00"
+                    className="w-80 block pl-2 font-medium text-lg focus:outline-none rounded-md"
+                  />
+                  <p className="self-end text-sm text-gray-600 font-medium">MAX</p>
+                </div>
+
+                {/* <Dropdown3 /> */}
               </div>
 
               <div className="my-5 w-full flex flex-col items-center ">
                 <button
-                  className={`p-2 w-full bg-green-200 text-green-700 text-center rounded-md font-medium text-2xl disabled:cursor-not-allowed disabled:opacity-50`}
+                  className={`p-2 w-full bg-green-200 text-green-800 text-center rounded-md font-medium text-xl disabled:cursor-not-allowed disabled:opacity-50`}
                 >
-                  <button>Pledge</button>
+                  Pledge
                 </button>
               </div>
             </div>

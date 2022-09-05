@@ -5,8 +5,8 @@ export default function Dropdown() {
   const [selectedToken, setSelectedToken] = useState({});
 
   const onButtonClick = () => {
-    console.log("I am here")
-    // setDropdownState((prev) => !prev);
+    console.log("I am here");
+    setDropdownState((prev) => !prev);
   };
 
   const supportedTokens = [
@@ -16,16 +16,18 @@ export default function Dropdown() {
     { name: "XRP", src: "/xrp.png" },
   ];
 
-  console.log(selectedToken)
+  console.log(selectedToken);
   const Token = () => {
     return (
       <>
         {supportedTokens.map((item) => {
           return (
+            // <div onClick={() => {console.log(item)}} className="cursor-pointer">{item?.name}</div>
             <li
-              key={item[0]}
               className="mt-2 hover:bg-gray-200"
-              // onClick={setSelectedToken({ name: item.name, src: item.src })}
+              onClick={() =>
+                setSelectedToken({ name: item.name, src: item.src })
+              }
             >
               <div className="flex px-2 items-center">
                 <div className="w-7 h-7">
@@ -53,39 +55,39 @@ export default function Dropdown() {
         className="focus:ring-1 focus:outline-none bg-gray-100 text-gray-800 font-medium rounded-t-lg text-sm px-4 py-2.5 text-center inline-flex items-center"
         type="button"
       >
-        {!selectedToken ? (
-          <div className="mt-2 hover:bg-gray-200">
-            <div className="flex px-2 items-center">
-              <div className="w-7 h-7">
-                <img
-                  alt="..."
-                  src={selectedToken.src}
-                  className="object-cover w-full h-full"
-                />
+        <div className="flex justify-between w-full items-center">
+          {!(Object.keys(selectedToken).length === 0) ? (
+            <div className="hover:bg-gray-200">
+              <div className="flex items-center">
+                <div className="w-7 h-7">
+                  <img
+                    alt="..."
+                    src={selectedToken.src}
+                    className="object-cover w-full h-full"
+                  />
+                </div>
+                <a className="block py-2 px-2">{selectedToken.name}</a>
               </div>
-              <a className="block py-2 px-2">{selectedToken.name}</a>
             </div>
-          </div>
-        ) : (
-          <div className="flex justify-between w-full">
+          ) : (
             <p>Select Token</p>
-            <svg
-              className="ml-2 w-4 h-4"
-              aria-hidden="true"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2"
-                d="M19 9l-7 7-7-7"
-              ></path>
-            </svg>
-          </div>
-        )}
+          )}
+          <svg
+            className="ml-2 w-4 h-4"
+            aria-hidden="true"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth="2"
+              d="M19 9l-7 7-7-7"
+            ></path>
+          </svg>
+        </div>
       </button>
 
       <div
@@ -99,68 +101,7 @@ export default function Dropdown() {
           aria-labelledby="dropdownDefault"
         >
           <Token />
-          {/* <li className="mt-2 hover:bg-gray-200">
-            <div className="flex px-2 items-center">
-              <div className="w-7 h-7">
-                <img
-                  alt="..."
-                  src="/bnb.svg"
-                  className="object-cover w-full h-full"
-                />
-              </div>
-              <a className="block py-2 px-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">
-                BNB
-              </a>
-            </div>
-          </li>
 
-          <li className="mt-2">
-            <div className="flex px-2 items-center">
-              <div className="w-7 h-7">
-                <img
-                  alt="..."
-                  src="/busd.svg"
-                  className="object-cover w-full h-full"
-                />
-              </div>
-
-              <a className="block py-2 px-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">
-                BUSD
-              </a>
-            </div>
-          </li>
-
-          <li className="mt-2">
-            <div className="flex px-2 items-center">
-              <div className="w-7 h-7">
-                <img
-                  alt="..."
-                  src="/dai.png"
-                  className="object-cover w-full h-full"
-                />
-              </div>
-
-              <a className="block py-2 px-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">
-                DAI
-              </a>
-            </div>
-          </li>
-
-          <li className="mt-2">
-            <div className="flex px-2 items-center">
-              <div className="w-7 h-7">
-                <img
-                  alt="..."
-                  src="/xrp.png"
-                  className="object-cover w-full h-full"
-                />
-              </div>
-
-              <a className="block py-2 px-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">
-                XRP
-              </a>
-            </div>
-          </li> */}
         </ul>
       </div>
     </>

@@ -11,5 +11,7 @@ module.exports = {
       logo: ['Rampart One', "cursive"]
     },
   },
-  plugins: [],
+  plugins: [
+    require('tailwind-scrollbar-hide')
+  ],
 }

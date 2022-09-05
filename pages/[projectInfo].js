@@ -105,8 +105,8 @@ export default function PageInfo() {
         </div>
       </section>
 
-      <div className="flex justify-center text-center sm:block sm:p-0 mt-2">
-        <SupportModal />
+      <div className="flex justify-center text-center sm:block sm:p-0 mt-2 scrollbar-hide">
+        {/* <SupportModal /> */}
       </div>
 
       <footer className="bg-zinc-800 text-gray-400 flex justify-between items-center flex-col">
