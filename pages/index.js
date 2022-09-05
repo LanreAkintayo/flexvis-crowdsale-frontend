@@ -1,45 +1,14 @@
 import Head from "next/head";
 import Image from "next/image";
+import Footer from "../components/Footer";
+import Header from "../components/Header";
 
 export default function Home() {
   return (
     <>
       <section>
-        <div className="h-20">
-          {/* Navbar */}
-          <nav className="flex items-center px-4 py-4 h-full text-white bg-black ">
-            <p className="w-5/12 font-logo text-3xl">
-              <span className="text-orange-700">L</span>arry
-              <span className="text-orange-700">C</span>odes
-            </p>
-            <div className="flex w-7/12 items-center justify-end">
-              <div className="flex justify-between text-xl ">
-                {" "}
-                <a
-                  className="text-white font-semibold"
-                  href="#pablo"
-                  onClick={(e) => e.preventDefault()}
-                >
-                  Home
-                </a>
-                <a
-                  className="ml-8 text-white font-semibold"
-                  href="#pablo"
-                  onClick={(e) => e.preventDefault()}
-                >
-                  Projects
-                </a>
-                <a
-                  className="mx-8 text-white font-semibold"
-                  href="#pablo"
-                  onClick={(e) => e.preventDefault()}
-                >
-                  Get Funded
-                </a>
-              </div>
-            </div>
-          </nav>
-        </div>
+       <Header/>
+      
         <div className="relative w-full h-screen">
           <div className="absolute w-full h-full bg-gradient-to-r dark:from-black from-black to-gray-600 dark:to-gray-700">
             <div className="absolute w-full">
@@ -175,47 +144,7 @@ export default function Home() {
           </button>
         </div>
       </section>
-      <footer className="bg-zinc-800 text-gray-400 flex justify-between items-center flex-col">
-        <h1 className="text-xl pb-2 pt-1 "><u>Get in Touch</u></h1>
-        <div className="flex">
-          <div>
-            <img
-              alt="..."
-              src="/github.svg"
-              className="object-cover rounded-md "
-            />
-          </div>
-          <div>
-            <img
-              alt="..."
-              src="/linkedin.svg"
-              className="object-cover ml-3 rounded-md "
-            />
-          </div>
-          <div>
-            <img
-              alt="..."
-              src="/twitter.svg"
-              className="object-cover ml-3 rounded-md "
-            />
-          </div>
-          <div>
-            <img
-              alt="..."
-              src="/youtube.svg"
-              className="object-cover ml-3 rounded-md "
-            />
-          </div>
-          <div>
-            <img
-              alt="..."
-              src="/email.png"
-              className="object-cover w-8 h-8 ml-3 rounded-md "
-            />
-          </div>
-        </div>
-        <p className="mt-4 text-sm">© 2022 Made by LarryCodes</p>
-      </footer>
+      <Footer />
     </>
   );
 }
