@@ -1,3 +1,5 @@
+import SupportModal from "../components/SupportModal";
+
 export default function PageInfo() {
   return (
     <>
@@ -43,8 +45,14 @@ export default function PageInfo() {
         <p className="text-center text-gray-800">
           Mars, aside from earth is another suitable planet to travel to.{" "}
         </p>
-        <div className="flex mt-11">
-          <div className="flex flex-col w-7/12 px-8">
+        <div className="flex flex-col lg:flex-row mt-11">
+          <div className="flex flex-col lg:w-7/12 px-8">
+            <div className="flex justify-between text-xl text-gray-500 my-3 py-3 border-b-2">
+              <button>Home</button>
+              <button>Backers</button>
+              <button>Updates</button>
+              <button>Comments</button>
+            </div>
             <div className="w-full h-96">
               <img
                 alt="..."
@@ -54,11 +62,22 @@ export default function PageInfo() {
             </div>
 
             <div className="py-4">
-              <h1 className="text-4xl text-gray-800 pt-10 pb-4">Why do I need this fund?</h1>
-              <p>So, they always say that everyone has a purpose of being in this earth. It took me a very long time before I discovered my purpose of existing on earth. After pondering over and over, I decided that before I die, I'm gonna fulfill the purpose of my existence. <br/><br/> So, My purpose is to travel to all the planet in the world. We all know that we currently have two planets that we can live in, that is Earth and Mars.</p>
+              <h1 className="text-4xl text-gray-800 pt-10 pb-4">
+                Why do I need this fund?
+              </h1>
+              <p>
+                So, they always say that everyone has a purpose of being in this
+                earth. It took me a very long time before I discovered my
+                purpose of existing on earth. After pondering over and over, I
+                decided that before I die, I'm gonna fulfill the purpose of my
+                existence. <br />
+                <br /> So, My purpose is to travel to all the planet in the
+                world. We all know that we currently have two planets that we
+                can live in, that is Earth and Mars.
+              </p>
             </div>
           </div>
-          <div className="mx-8 w-5/12 px-8">
+          <div className="mx-8 lg:w-5/12 lg:px-8">
             <div className="bg-neutral-300 h-4 dark:bg-gray-700">
               <div
                 className="bg-green-600 h-4 "
@@ -79,12 +98,60 @@ export default function PageInfo() {
               <p className="text-sm text-gray-500">raised of $500,000</p>
             </div>
 
-            <button className="mt-6 w-full rounded-md p-2 bg-green-200 text-green-800">
-              Back this Project
+            <button className="my-6 w-full rounded-md p-2 bg-green-200 text-green-800">
+              Support this Project
             </button>
           </div>
         </div>
       </section>
+
+      <div className="flex justify-center text-center sm:block sm:p-0 mt-2">
+        <SupportModal />
+      </div>
+
+      <footer className="bg-zinc-800 text-gray-400 flex justify-between items-center flex-col">
+        <h1 className="text-xl pb-2 pt-1 ">
+          <u>Get in Touch</u>
+        </h1>
+        <div className="flex">
+          <div>
+            <img
+              alt="..."
+              src="/github.svg"
+              className="object-cover rounded-md "
+            />
+          </div>
+          <div>
+            <img
+              alt="..."
+              src="/linkedin.svg"
+              className="object-cover ml-4 rounded-md "
+            />
+          </div>
+          <div>
+            <img
+              alt="..."
+              src="/twitter.svg"
+              className="object-cover ml-4 rounded-md "
+            />
+          </div>
+          <div>
+            <img
+              alt="..."
+              src="/youtube.svg"
+              className="object-cover ml-4 rounded-md "
+            />
+          </div>
+          <div>
+            <img
+              alt="..."
+              src="/email.png"
+              className="object-cover w-7 h-7 ml-4 rounded-md "
+            />
+          </div>
+        </div>
+        <p className="mt-4 text-sm">© 2022 Made by LarryCodes</p>
+      </footer>
     </>
   );
 }

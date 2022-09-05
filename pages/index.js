@@ -51,7 +51,7 @@ export default function Home() {
             </div>
           </div>
           <div className="mx-7 absolute w-full h-4/6 flex flex-col justify-center text-white">
-            <div className="text-white text-6xl w-8/12 ">
+            <div className="text-white text-3xl font-medium lg:text-6xl w-8/12 ">
               Best Crowdfund Platform for Personal Projects
             </div>
             <p className="my-4">Fund with varieties of tokens</p>
@@ -69,8 +69,8 @@ export default function Home() {
       <section className="pl-5 w-full">
         <h1 className="text-3xl mt-10">Explore Projects</h1>
         <div className="flex flex-col w-full items-center my-10 mb-14">
-          <div className="flex justify-between">
-            <div className="mx-3 bg-white-200 shadow-lg">
+          <div className="flex lg:flex-row flex-col justify-between">
+            <div className="mx-3 mb-5 lg:mb-0 bg-white-200 shadow-lg">
               <div className="w-full h-56 ">
                 <img
                   alt="..."
@@ -95,7 +95,7 @@ export default function Home() {
               </div>
             </div>
 
-            <div className="mx-3 bg-white-200 shadow-lg">
+            <div className="mx-3 mb-5 lg:mb-0  bg-white-200 shadow-lg">
               <div className="w-full h-56 ">
                 <img
                   alt="..."
@@ -120,7 +120,7 @@ export default function Home() {
               </div>
             </div>
 
-            <div className="mx-3 bg-white-200 shadow-lg">
+            <div className="mx-3 mb-5 lg:mb-0 bg-white-200 shadow-lg">
               <div className="w-full h-56 ">
                 <img
                   alt="..."
@@ -145,7 +145,7 @@ export default function Home() {
               </div>
             </div>
 
-            <div className="mx-3 bg-white-200 shadow-lg">
+            <div className="mx-3 mb-5 lg:mb-0  bg-white-200 shadow-lg">
               <div className="w-full h-56 ">
                 <img
                   alt="..."
