@@ -2,16 +2,31 @@ import Footer from "../components/Footer";
 import Header from "../components/Header";
 import React, { useEffect, useState } from "react";
 import DatePicker from "react-datepicker";
-import { create } from 'ipfs-http-client';
+import { create } from "ipfs-http-client";
 
 import "react-datepicker/dist/react-datepicker.css";
 // import DatePicker from "sassy-datepicker";
 
 /* Create an instance of the client */
 // const client = ipfsClient({ host: 'ipfs.infura.io', port: 5001, protocol: 'https' })
-const client = create('https://ipfs.infura.io:5001/api/v0')
+// const client = create('https://ipfs.infura.io:5001/api/v0')
 
-  export default function Launch() {
+const projectId = process.env.NEXT_PUBLIC_PROJECT_ID;
+const projectSecret = process.env.NEXT_PUBLIC_API_SECRET_KEY;
+
+const auth =
+  "Basic " + Buffer.from(projectId + ":" + projectSecret).toString("base64");
+
+const client = create({
+  host: "ipfs.infura.io",
+  port: 5001,
+  protocol: "https",
+  headers: {
+    authorization: auth,
+  },
+});
+
+export default function Launch() {
   // Create a reference to the hidden file input element
   const hiddenFileInput = React.useRef(null);
   const [imageFile, setImageFile] = useState("");
@@ -24,18 +39,21 @@ const client = create('https://ipfs.infura.io:5001/api/v0')
     imageSrc: "",
     launchDate: new Date(),
     duration: "",
+    goal: "",
   });
   const [isValidDuration, setIsValidDuration] = useState(true);
   const [isValidLaunchDate, setIsValidLaunchDate] = useState(true);
+  const [isValidGoal, setIsValidGoal] = useState(true);
 
   useEffect(() => {
     console.log(projectInfo);
   }, [projectInfo]);
 
-
   useEffect(() => {
     setAllValid(
-      Object.values(projectInfo).every(item => ![false, 0, null, "", {}].includes(item)) &&
+      Object.values(projectInfo).every(
+        (item) => ![false, 0, null, "", {}].includes(item)
+      ) &&
         isValidDuration &&
         isValidLaunchDate
     );
@@ -48,11 +66,15 @@ const client = create('https://ipfs.infura.io:5001/api/v0')
   };
 
   const handleOnChange = (event) => {
+    console.log("Secret Key: ", process.env.NEXT_PUBLIC_PROJECT_ID);
+    console.log("abc");
+
     let imagePath;
+    let amount;
 
     if (event.target.id == "imageSrc") {
       imagePath = event.target.files[0];
-      setImageFile(imagePath)
+      setImageFile(imagePath);
       console.log("imagePath: ", imagePath);
     }
     if (event.target.id == "duration") {
@@ -68,29 +90,47 @@ const client = create('https://ipfs.infura.io:5001/api/v0')
         return true;
       });
     }
+    if (event.target.id == "goal") {
+      const price = event.target.value;
+      let dollarUSLocale = Intl.NumberFormat("en-US");
+      // amount = dollarUSLocale.format(price).toString();
+      amount=price
+      
+      setIsValidGoal(() => {
+        if (/^\$?\d+(,\d{3})*(\.\d*)?$/.test(amount.toString())) {
+          return true;
+        }
+        return false;
+      });
+    }
 
     setProjectInfo((prevProjectInfo) => {
       return {
         ...prevProjectInfo,
         [event.target.id]:
-          event.target.id == "imageSrc" ? URL.createObjectURL(imagePath) : event.target.value,
+          event.target.id == "imageSrc"
+            ? URL.createObjectURL(imagePath)
+            : event.target.value,
+        [event.target.id]:
+          event.target.id == "goal" ? amount : event.target.value,
       };
     });
   };
 
   const handleLaunch = async () => {
-    const imagePath = imageFile
-    debugger
-    const uploadedImage = await client.add(imagePath)
-    const url = `https://ipfs.infura.io/ipfs/${uploadedImage.path}`
+    const goalInDollars = project.goal.replace(/[^0-9]/g, '')
+    console.log("Goal in dollars: ", goalInDollars)
+    const uploadedImage = await client.add(imageFile);
+    const url = `https://ipfs.io/ipfs/${uploadedImage.path}`;
+
+
 
     setProjectInfo((prevProjectInfo) => {
       return {
         ...prevProjectInfo,
-          imageSrc : url
+        imageSrc: url,
       };
     });
-    
   };
 
   return (
@@ -320,6 +360,43 @@ const client = create('https://ipfs.infura.io:5001/api/v0')
             </div>
           </div>
         </div>
+
+        <div className="flex border-t mt-11 border-gray-300 py-4 px-16 ">
+          <div className="w-5/12 ">
+            <h1>Goal (Amount to raise)</h1>
+            <p className="text-sm text-gray-600">
+              Set the amount to be funded. Note that if the goal is not reached
+              after the specified campaign duration, money will be refunded to
+              the backers.
+              <br />
+              <br />
+            </p>
+          </div>
+          <div className="w-7/12 px-11 ">
+            <div>
+              <h1>Enter amount to raise in dollars </h1>
+              <div className="flex border border-gray-100 items-center p-2">
+                <p>$</p>
+                <input
+                  onChange={handleOnChange}
+                  type="text"
+                  value={projectInfo.goal || ""}
+                  name="text"
+                  id="goal"
+                  // placeholder="$50,000"
+                  className="w-80 block text-sm ml-1  focus:outline-none rounded-md"
+                />
+              </div>
+
+              {!isValidGoal && (
+                <p className="text-red-700 text-sm">
+                  <small>Invalid amount</small>
+                </p>
+              )}
+            </div>
+          </div>
+        </div>
+
         {allValid && (
           <button
             className="flex flex-col w-full items-center my-5 mb-14"
