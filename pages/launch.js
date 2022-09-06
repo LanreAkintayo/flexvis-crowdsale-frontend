@@ -2,14 +2,21 @@ import Footer from "../components/Footer";
 import Header from "../components/Header";
 import React, { useEffect, useState } from "react";
 import DatePicker from "react-datepicker";
+import { create } from 'ipfs-http-client';
 
 import "react-datepicker/dist/react-datepicker.css";
 // import DatePicker from "sassy-datepicker";
 
-export default function Launch() {
+/* Create an instance of the client */
+// const client = ipfsClient({ host: 'ipfs.infura.io', port: 5001, protocol: 'https' })
+const client = create('https://ipfs.infura.io:5001/api/v0')
+
+  export default function Launch() {
   // Create a reference to the hidden file input element
   const hiddenFileInput = React.useRef(null);
+  const [imageFile, setImageFile] = useState("");
   const [launchDate, setLaunchDate] = useState("");
+  const [allValid, setAllValid] = useState(false);
   const [projectInfo, setProjectInfo] = useState({
     title: "",
     subtitle: "",
@@ -21,20 +28,18 @@ export default function Launch() {
   const [isValidDuration, setIsValidDuration] = useState(true);
   const [isValidLaunchDate, setIsValidLaunchDate] = useState(true);
 
-  const onlyNumberKey = (event) => {
-    // Only ASCII character in that range allowed
-    var ASCIICode = event.which ? event.which : event.keyCode;
-    if (ASCIICode > 31 && (ASCIICode < 48 || ASCIICode > 57)) return false;
-    return true;
-  };
-
   useEffect(() => {
     console.log(projectInfo);
   }, [projectInfo]);
 
+
   useEffect(() => {
-    console.log(launchDate);
-  }, [launchDate]);
+    setAllValid(
+      Object.values(projectInfo).every(item => ![false, 0, null, "", {}].includes(item)) &&
+        isValidDuration &&
+        isValidLaunchDate
+    );
+  }, [projectInfo, isValidDuration, isValidLaunchDate]);
 
   // Programatically click the hidden file input element
   // when the Button component is clicked
@@ -43,15 +48,12 @@ export default function Launch() {
   };
 
   const handleOnChange = (event) => {
-    // console.log(event.target.value);
-    // console.log(event.target.id);
-    // console.log(typeof event)
-
-    let imageUrl;
+    let imagePath;
 
     if (event.target.id == "imageSrc") {
-      imageUrl = URL.createObjectURL(event.target.files[0]);
-      console.log("ImageUrl: ", imageUrl);
+      imagePath = event.target.files[0];
+      setImageFile(imagePath)
+      console.log("imagePath: ", imagePath);
     }
     if (event.target.id == "duration") {
       const duration = event.target.value;
@@ -71,12 +73,25 @@ export default function Launch() {
       return {
         ...prevProjectInfo,
         [event.target.id]:
-          event.target.id == "imageSrc" ? imageUrl : event.target.value,
+          event.target.id == "imageSrc" ? URL.createObjectURL(imagePath) : event.target.value,
       };
     });
   };
 
-  // const [startDate, setStartDate] = useState(new Date());
+  const handleLaunch = async () => {
+    const imagePath = imageFile
+    debugger
+    const uploadedImage = await client.add(imagePath)
+    const url = `https://ipfs.infura.io/ipfs/${uploadedImage.path}`
+
+    setProjectInfo((prevProjectInfo) => {
+      return {
+        ...prevProjectInfo,
+          imageSrc : url
+      };
+    });
+    
+  };
 
   return (
     <>
@@ -305,11 +320,16 @@ export default function Launch() {
             </div>
           </div>
         </div>
-        <div className="flex flex-col w-full items-center my-5 mb-14">
-          <h1 className="px-5 rounded-md bg-green-300 text-green-800 py-3">
-            Launch Your Project
-          </h1>
-        </div>
+        {allValid && (
+          <button
+            className="flex flex-col w-full items-center my-5 mb-14"
+            onClick={handleLaunch}
+          >
+            <h1 className="px-5 rounded-md bg-green-300 text-green-800 py-3">
+              Launch Your Project
+            </h1>
+          </button>
+        )}
       </section>
       <Footer />
     </>
