@@ -9,6 +9,7 @@ import "react-datepicker/dist/react-datepicker.css";
 export default function () {
   // Create a reference to the hidden file input element
   const hiddenFileInput = React.useRef(null);
+  const [imageUrl, setImageUrl] = useState("");
 
   // Programatically click the hidden file input element
   // when the Button component is clicked
@@ -21,7 +22,8 @@ export default function () {
   const handleChange = (event) => {
     const fileUploaded = event.target.files[0];
     // props.handleFile(fileUploaded);
-    console.log("I am here");
+    setImageUrl(URL.createObjectURL(event.target.files[0]));
+    console.log(fileUploaded);
   };
 
   const [startDate, setStartDate] = useState(new Date());
@@ -108,12 +110,21 @@ export default function () {
           </div>
           <div className="w-7/12 px-11 ">
             <div className="">
-              <div className="border border-gray-300 h-40 w-full hover:bg-gray-200">
+              <div className="border border-gray-300 h-80 w-full hover:bg-gray-200">
                 <button className="w-full h-full" onClick={handleClick}>
-                  <p className="text-sm">Select a File</p>
-                  <p className="text-sm text-gray-500">
-                    <small>It must be a JPG, PNG, GIF, TIFF, or BMP.</small>
-                  </p>
+                  {imageUrl ? <div className="w-full h-full">
+                  <img
+                    alt="..."
+                    src={imageUrl}
+                    className="object-cover w-full h-full"
+                  />
+                </div> :  <div>
+                    <p className="text-sm">Select a File</p>
+                    <p className="text-sm text-gray-500">
+                      <small>It must be a JPG, PNG, GIF, TIFF, or BMP.</small>
+                    </p>
+                  </div>}
+                 
                 </button>
                 <input
                   type="file"
@@ -122,6 +133,7 @@ export default function () {
                   onChange={handleChange}
                   className="w-80 block p-2 text-sm mt-1 border border-gray-100 focus:outline-none rounded-md"
                 />
+                
               </div>
             </div>
           </div>
@@ -138,11 +150,22 @@ export default function () {
             </p>
           </div>
           <div className="w-7/12 px-11 ">
-            
-              <div className="flex items-center">
-                <div className="flex">
+            <div className="flex items-center">
+              <div className="flex">
+                <div className="flex flex-col ml-4 my-2">
+                  <p className="text-sm">Day</p>
+                  <input
+                    type="text"
+                    name="text"
+                    id="text"
+                    placeholder=""
+                    className="w-12 h-10 block p-2 text-sm mt-1 border border-gray-200 focus:outline-none "
+                  />
+                </div>
+                <div className="flex flex-col">
+                  {" "}
                   <div className="flex flex-col ml-4 my-2">
-                    <p className="text-sm">Day</p>
+                    <p className="text-sm">Month</p>
                     <input
                       type="text"
                       name="text"
@@ -151,66 +174,53 @@ export default function () {
                       className="w-12 h-10 block p-2 text-sm mt-1 border border-gray-200 focus:outline-none "
                     />
                   </div>
-                  <div className="flex flex-col">
-                    {" "}
-                    <div className="flex flex-col ml-4 my-2">
-                      <p className="text-sm">Month</p>
-                      <input
-                        type="text"
-                        name="text"
-                        id="text"
-                        placeholder=""
-                        className="w-12 h-10 block p-2 text-sm mt-1 border border-gray-200 focus:outline-none "
-                      />
-                    </div>
-                  </div>
-                  <div className="flex flex-col">
-                    <div className="flex flex-col ml-4 my-2">
-                      <p className="text-sm">Year</p>
-                      <input
-                        type="text"
-                        name="text"
-                        id="text"
-                        placeholder=""
-                        className="w-16 h-10 block p-2 text-sm mt-1 border border-gray-200 focus:outline-none "
-                      />
-                    </div>
-                  </div>
                 </div>
-                <p className="px-11">or</p>
-
                 <div className="flex flex-col">
                   <div className="flex flex-col ml-4 my-2">
-                    <p className="text-sm">Use Calendar</p>
-                    <div>
-                      <div className="flex bg-gray-50 border px-2 border-gray-300 items-center p-2">
-                        <svg
-                          aria-hidden="true"
-                          className="w-5 h-5 text-gray-500 dark:text-gray-400"
-                          fill="currentColor"
-                          viewBox="0 0 20 20"
-                          xmlns="http://www.w3.org/2000/svg"
-                        >
-                          <path
-                            fillRule="evenodd"
-                            d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z"
-                            clipRule="evenodd"
-                          ></path>
-                        </svg>
+                    <p className="text-sm">Year</p>
+                    <input
+                      type="text"
+                      name="text"
+                      id="text"
+                      placeholder=""
+                      className="w-16 h-10 block p-2 text-sm mt-1 border border-gray-200 focus:outline-none "
+                    />
+                  </div>
+                </div>
+              </div>
+              <p className="px-11">or</p>
 
-                        {/* <DatePicker /> */}
+              <div className="flex flex-col">
+                <div className="flex flex-col ml-4 my-2">
+                  <p className="text-sm">Use Calendar</p>
+                  <div>
+                    <div className="flex bg-gray-50 border px-2 border-gray-300 items-center p-2">
+                      <svg
+                        aria-hidden="true"
+                        className="w-5 h-5 text-gray-500 dark:text-gray-400"
+                        fill="currentColor"
+                        viewBox="0 0 20 20"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path
+                          fillRule="evenodd"
+                          d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z"
+                          clipRule="evenodd"
+                        ></path>
+                      </svg>
 
-                        <DatePicker
-                          className=" text-gray-900 bg-gray-50 p-2 sm:text-sm outline-none "
-                          selected={startDate}
-                          onChange={(date) => setStartDate(date)}
-                        />
-                      </div>
+                      {/* <DatePicker /> */}
+
+                      <DatePicker
+                        className=" text-gray-900 bg-gray-50 p-2 sm:text-sm outline-none "
+                        selected={startDate}
+                        onChange={(date) => setStartDate(date)}
+                      />
                     </div>
                   </div>
                 </div>
               </div>
-       
+            </div>
           </div>
         </div>
 
