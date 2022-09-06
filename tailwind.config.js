@@ -8,7 +8,8 @@ module.exports = {
     extend: {},
     fontFamily: {
       sans: ["Montserrat", "sans-serif"],
-      logo: ['Rampart One', "cursive"]
+      // logo: ['Rampart One', "cursive"]
+      logo: ['Germania One', 'cursive']
     },
   },
   plugins: [

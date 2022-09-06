@@ -6,7 +6,7 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 // import DatePicker from "sassy-datepicker";
 
-export default function () {
+export default function Launch() {
   // Create a reference to the hidden file input element
   const hiddenFileInput = React.useRef(null);
   const [imageUrl, setImageUrl] = useState("");

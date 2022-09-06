@@ -2,8 +2,20 @@ import Head from "next/head";
 import Image from "next/image";
 import Footer from "../components/Footer";
 import Header from "../components/Header";
+import { CryptoCards, Button } from '@web3uikit/core';
+import { useMoralis } from "react-moralis";
+import {useState} from "react"
+
 
 export default function Home() {
+  const { isWeb3Enabled, chainId } = useMoralis();
+
+  const [enabled, setEnabled] = useState(false)
+
+  console.log(chainId)
+  console.log(isWeb3Enabled)
+
+  
   return (
     <>
       <section>
@@ -23,11 +35,18 @@ export default function Home() {
             <div className="text-white text-3xl font-medium lg:text-6xl w-8/12 ">
               Best Crowdfund Platform for Personal Projects
             </div>
-            <p className="my-4">Fund with varieties of tokens</p>
+            <p className="my-4 text-xl">Fund with varieties of tokens</p>
             <div className="flex text-xl mt-6">
-              <button className="bg-green-700 p-2 rounded-md">
+              <button className="bg-green-800 p-2 rounded-md" onClick={() => {
+                if(isWeb3Enabled){
+                  window.open("/launch", "_self");
+                } else{
+                  setEnabled(false);
+                }
+              }}>
                 Get Funded
               </button>
+              
               <button className="border border-green-500 p-2 rounded-md ml-4 text-green-500">
                 Browse Project
               </button>
