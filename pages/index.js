@@ -2,25 +2,23 @@ import Head from "next/head";
 import Image from "next/image";
 import Footer from "../components/Footer";
 import Header from "../components/Header";
-import { CryptoCards, Button } from '@web3uikit/core';
+import { CryptoCards, Button } from "@web3uikit/core";
 import { useMoralis } from "react-moralis";
-import {useState} from "react"
-
+import { useState } from "react";
 
 export default function Home() {
   const { isWeb3Enabled, chainId } = useMoralis();
 
-  const [enabled, setEnabled] = useState(false)
+  const [enabled, setEnabled] = useState(false);
 
-  console.log(chainId)
-  console.log(isWeb3Enabled)
+  console.log(chainId);
+  console.log(isWeb3Enabled);
 
-  
   return (
     <>
       <section>
-       <Header/>
-      
+        <Header />
+
         <div className="relative w-full h-screen">
           <div className="absolute w-full h-full bg-gradient-to-r dark:from-black from-black to-gray-600 dark:to-gray-700">
             <div className="absolute w-full">
@@ -37,17 +35,29 @@ export default function Home() {
             </div>
             <p className="my-4 text-xl">Fund with varieties of tokens</p>
             <div className="flex text-xl mt-6">
-              <button className="bg-green-800 p-2 rounded-md" onClick={() => {
-                if(isWeb3Enabled){
-                  window.open("/launch", "_self");
-                } else{
-                  setEnabled(false);
-                }
-              }}>
+              <button
+                className="bg-green-800 p-2 rounded-md"
+                onClick={() => {
+                  if (isWeb3Enabled) {
+                    window.open("/launch", "_self");
+                  } else {
+                    window.alert("Connect your wallet");
+                  }
+                }}
+              >
                 Get Funded
               </button>
-              
-              <button className="border border-green-500 p-2 rounded-md ml-4 text-green-500">
+
+              <button
+                className="border border-green-500 p-2 rounded-md ml-4 text-green-500"
+                onClick={() => {
+                  if (isWeb3Enabled) {
+                    window.open("/projects", "_self");
+                  } else {
+                    window.alert("Connect your wallet");
+                  }
+                }}
+              >
                 Browse Project
               </button>
             </div>

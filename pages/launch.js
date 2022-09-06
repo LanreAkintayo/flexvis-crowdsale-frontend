@@ -1,6 +1,6 @@
 import Footer from "../components/Footer";
 import Header from "../components/Header";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import DatePicker from "react-datepicker";
 
 import "react-datepicker/dist/react-datepicker.css";
@@ -9,7 +9,32 @@ import "react-datepicker/dist/react-datepicker.css";
 export default function Launch() {
   // Create a reference to the hidden file input element
   const hiddenFileInput = React.useRef(null);
-  const [imageUrl, setImageUrl] = useState("");
+  const [launchDate, setLaunchDate] = useState("");
+  const [projectInfo, setProjectInfo] = useState({
+    title: "",
+    subtitle: "",
+    note: "",
+    imageSrc: "",
+    launchDate: new Date(),
+    duration: "",
+  });
+  const [isValidDuration, setIsValidDuration] = useState(true);
+  const [isValidLaunchDate, setIsValidLaunchDate] = useState(true);
+
+  const onlyNumberKey = (event) => {
+    // Only ASCII character in that range allowed
+    var ASCIICode = event.which ? event.which : event.keyCode;
+    if (ASCIICode > 31 && (ASCIICode < 48 || ASCIICode > 57)) return false;
+    return true;
+  };
+
+  useEffect(() => {
+    console.log(projectInfo);
+  }, [projectInfo]);
+
+  useEffect(() => {
+    console.log(launchDate);
+  }, [launchDate]);
 
   // Programatically click the hidden file input element
   // when the Button component is clicked
@@ -17,16 +42,41 @@ export default function Launch() {
     hiddenFileInput.current.click();
   };
 
-  // Call a function (passed as a prop from the parent component)
-  // to handle the user-selected file
-  const handleChange = (event) => {
-    const fileUploaded = event.target.files[0];
-    // props.handleFile(fileUploaded);
-    setImageUrl(URL.createObjectURL(event.target.files[0]));
-    console.log(fileUploaded);
+  const handleOnChange = (event) => {
+    // console.log(event.target.value);
+    // console.log(event.target.id);
+    // console.log(typeof event)
+
+    let imageUrl;
+
+    if (event.target.id == "imageSrc") {
+      imageUrl = URL.createObjectURL(event.target.files[0]);
+      console.log("ImageUrl: ", imageUrl);
+    }
+    if (event.target.id == "duration") {
+      const duration = event.target.value;
+      setIsValidDuration(() => {
+        if (
+          /[^0-9]/g.test(duration.toString()) ||
+          Number(duration) > 60 ||
+          Number(duration) < 1
+        ) {
+          return false;
+        }
+        return true;
+      });
+    }
+
+    setProjectInfo((prevProjectInfo) => {
+      return {
+        ...prevProjectInfo,
+        [event.target.id]:
+          event.target.id == "imageSrc" ? imageUrl : event.target.value,
+      };
+    });
   };
 
-  const [startDate, setStartDate] = useState(new Date());
+  // const [startDate, setStartDate] = useState(new Date());
 
   return (
     <>
@@ -53,23 +103,27 @@ export default function Launch() {
               <h1>Title</h1>
 
               <input
+                onChange={handleOnChange}
                 type="text"
+                maxLength="80"
                 name="text"
-                id="text"
+                id="title"
                 placeholder="Write a short Title"
-                className="w-80 block p-2 text-sm mt-1 border border-gray-100 focus:outline-none rounded-md"
+                className="w-96 block p-2 text-sm mt-1 border border-gray-100 focus:outline-none rounded-md"
               />
             </div>
 
-            <div className="mt-7 ">
+            <div className="mt-7">
               <h1>Subtitle</h1>
 
               <input
+                onChange={handleOnChange}
                 type="text"
                 name="text"
-                id="text"
+                id="subtitle"
+                maxLength="100"
                 placeholder="A short subtitle is going to help"
-                className="w-80 block p-2 text-sm mt-1 border border-gray-100 focus:outline-none rounded-md"
+                className="w-96 block p-2 text-sm mt-1 border border-gray-100 focus:outline-none rounded-md"
               />
             </div>
           </div>
@@ -88,9 +142,11 @@ export default function Launch() {
             <div>
               <h1>Note</h1>
               <textarea
+                onChange={handleOnChange}
                 cols="50"
                 wrap="soft"
                 placeholder="Write a short note"
+                id="note"
                 className="w-full  h-60 text-clip block p-2 text-sm mt-1 border border-gray-100 focus:outline-none rounded-md"
               ></textarea>
             </div>
@@ -111,29 +167,36 @@ export default function Launch() {
           <div className="w-7/12 px-11 ">
             <div className="">
               <div className="border border-gray-300 h-80 w-full hover:bg-gray-200">
-                <button className="w-full h-full" onClick={handleClick}>
-                  {imageUrl ? <div className="w-full h-full">
-                  <img
-                    alt="..."
-                    src={imageUrl}
-                    className="object-cover w-full h-full"
-                  />
-                </div> :  <div>
-                    <p className="text-sm">Select a File</p>
-                    <p className="text-sm text-gray-500">
-                      <small>It must be a JPG, PNG, GIF, TIFF, or BMP.</small>
-                    </p>
-                  </div>}
-                 
+                <button
+                  className="w-full h-full"
+                  id="image"
+                  onClick={handleClick}
+                >
+                  {projectInfo.imageSrc ? (
+                    <div className="w-full h-full">
+                      <img
+                        alt="..."
+                        src={projectInfo.imageSrc}
+                        className="object-cover w-full h-full"
+                      />
+                    </div>
+                  ) : (
+                    <div>
+                      <p className="text-sm">Select a File</p>
+                      <p className="text-sm text-gray-500">
+                        <small>It must be a JPG, PNG, GIF, TIFF, or BMP.</small>
+                      </p>
+                    </div>
+                  )}
                 </button>
                 <input
                   type="file"
+                  id="imageSrc"
                   ref={hiddenFileInput}
                   style={{ display: "none" }}
-                  onChange={handleChange}
+                  onChange={handleOnChange}
                   className="w-80 block p-2 text-sm mt-1 border border-gray-100 focus:outline-none rounded-md"
                 />
-                
               </div>
             </div>
           </div>
@@ -151,45 +214,6 @@ export default function Launch() {
           </div>
           <div className="w-7/12 px-11 ">
             <div className="flex items-center">
-              <div className="flex">
-                <div className="flex flex-col ml-4 my-2">
-                  <p className="text-sm">Day</p>
-                  <input
-                    type="text"
-                    name="text"
-                    id="text"
-                    placeholder=""
-                    className="w-12 h-10 block p-2 text-sm mt-1 border border-gray-200 focus:outline-none "
-                  />
-                </div>
-                <div className="flex flex-col">
-                  {" "}
-                  <div className="flex flex-col ml-4 my-2">
-                    <p className="text-sm">Month</p>
-                    <input
-                      type="text"
-                      name="text"
-                      id="text"
-                      placeholder=""
-                      className="w-12 h-10 block p-2 text-sm mt-1 border border-gray-200 focus:outline-none "
-                    />
-                  </div>
-                </div>
-                <div className="flex flex-col">
-                  <div className="flex flex-col ml-4 my-2">
-                    <p className="text-sm">Year</p>
-                    <input
-                      type="text"
-                      name="text"
-                      id="text"
-                      placeholder=""
-                      className="w-16 h-10 block p-2 text-sm mt-1 border border-gray-200 focus:outline-none "
-                    />
-                  </div>
-                </div>
-              </div>
-              <p className="px-11">or</p>
-
               <div className="flex flex-col">
                 <div className="flex flex-col ml-4 my-2">
                   <p className="text-sm">Use Calendar</p>
@@ -212,11 +236,38 @@ export default function Launch() {
                       {/* <DatePicker /> */}
 
                       <DatePicker
+                        id="launchDate"
                         className=" text-gray-900 bg-gray-50 p-2 sm:text-sm outline-none "
-                        selected={startDate}
-                        onChange={(date) => setStartDate(date)}
+                        selected={projectInfo.launchDate}
+                        onChange={(date) => {
+                          const dateInMilliseconds = date.getTime();
+                          const currentDateInMilliseconds =
+                            new Date().getTime();
+
+                          setIsValidLaunchDate(
+                            dateInMilliseconds > currentDateInMilliseconds
+                              ? true
+                              : false
+                          );
+
+                          setProjectInfo((prevProjectInfo) => {
+                            return {
+                              ...prevProjectInfo,
+                              launchDate: date,
+                            };
+                          });
+                          // setLaunchDate(date);
+                        }}
                       />
                     </div>
+                    {!isValidLaunchDate && (
+                      <p className="text-red-700 text-sm">
+                        <small>
+                          The Launch date should be greater than the current
+                          date
+                        </small>
+                      </p>
+                    )}
                   </div>
                 </div>
               </div>
@@ -239,17 +290,23 @@ export default function Launch() {
               <h1>Enter Number of days (1 - 60) </h1>
 
               <input
+                onChange={handleOnChange}
                 type="text"
                 name="text"
-                id="text"
+                id="duration"
                 placeholder="1"
                 className="w-80 block p-2 text-sm mt-1 border border-gray-100 focus:outline-none rounded-md"
               />
+              {!isValidDuration && (
+                <p className="text-red-700 text-sm">
+                  <small>Duration should be within 1 and 60</small>
+                </p>
+              )}
             </div>
           </div>
         </div>
         <div className="flex flex-col w-full items-center my-5 mb-14">
-          <h1 className="p-2 rounded-md bg-green-300 text-green-800 py-3">
+          <h1 className="px-5 rounded-md bg-green-300 text-green-800 py-3">
             Launch Your Project
           </h1>
         </div>
