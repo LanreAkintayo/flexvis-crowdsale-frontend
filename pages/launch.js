@@ -55,7 +55,7 @@ export default function Launch() {
         (item) => ![false, 0, null, "", {}].includes(item)
       ) &&
         isValidDuration &&
-        isValidLaunchDate
+        isValidLaunchDate && isValidGoal
     );
   }, [projectInfo, isValidDuration, isValidLaunchDate]);
 
@@ -108,20 +108,23 @@ export default function Launch() {
       return {
         ...prevProjectInfo,
         [event.target.id]:
+          event.target.id == "goal" ? amount : event.target.value,
+          [event.target.id]:
           event.target.id == "imageSrc"
             ? URL.createObjectURL(imagePath)
-            : event.target.value,
-        [event.target.id]:
-          event.target.id == "goal" ? amount : event.target.value,
+            : event.target.value
       };
     });
   };
 
   const handleLaunch = async () => {
-    const goalInDollars = project.goal.replace(/[^0-9]/g, '')
+    const goalInDollars = projectInfo.goal.replace(/[^0-9]/g, '')
     console.log("Goal in dollars: ", goalInDollars)
     const uploadedImage = await client.add(imageFile);
     const url = `https://ipfs.io/ipfs/${uploadedImage.path}`;
+
+    console.log("abc")
+    console.log("Url: ", url)
 
 
 
