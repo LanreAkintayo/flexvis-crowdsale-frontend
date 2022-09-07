@@ -6,7 +6,7 @@ import { create } from "ipfs-http-client";
 import { contractAddresses, abi } from "../constants";
 import { useMoralis, useWeb3Contract } from "react-moralis";
 import { ethers } from "ethers";
-import {RotateLoader, ClipLoader} from "react-spinners"
+import { RotateLoader, ClipLoader } from "react-spinners";
 
 import "react-datepicker/dist/react-datepicker.css";
 // import DatePicker from "sassy-datepicker";
@@ -465,19 +465,21 @@ export default function Launch() {
 
         {!allValid && (
           <button
-            className="flex flex-col w-full items-center my-5 mb-14"
+            className="flex flex-col w-full items-center my-5 mb-14 disabled:cursor-not-allowed disabled:opacity-50"
             onClick={handleLaunch}
-            disabled={!(isFetching || isLoading)}
+            disabled={(isFetching || isLoading)}
           >
-            {!(isFetching || isLoading) ? (
-              <div className="flex bg-green-300 text-green-800 disabled:opacity-50 rounded-md items-center px-3 py-3">
-              <ClipLoader color="#004d00" loading="true" size={30} />
-              <p className="ml-2">Launching Project</p>
+            { (isFetching || isLoading) ? (
+              <div className="flex bg-green-300 text-green-800 rounded-md items-center px-3 py-3">
+                <ClipLoader color="#004d00" loading="true" size={30} />
+                <p className="ml-2">Launching Project</p>
               </div>
             ) : (
-              <h1 className="px-5 rounded-md bg-green-300 text-green-800 py-3">
-                Launch Your Project
-              </h1>
+              <div className="flex bg-green-300 text-green-800 rounded-md items-center px-3 py-3">
+                <p className="">
+                  Launch Your Project
+                </p>
+              </div>
             )}
           </button>
         )}

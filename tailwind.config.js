@@ -7,7 +7,7 @@ module.exports = {
   theme: {
     extend: {
       opacity:["disabled"],
-      cursor: ["disabled"]
+      cursor: ["disabled"],
     },
     fontFamily: {
       sans: ["Montserrat", "sans-serif"],
