@@ -7,6 +7,7 @@ import { contractAddresses, abi } from "../constants";
 import { useMoralis, useWeb3Contract } from "react-moralis";
 import { ethers } from "ethers";
 import { RotateLoader, ClipLoader } from "react-spinners";
+import { useNotification } from "web3uikit"
 
 import "react-datepicker/dist/react-datepicker.css";
 // import DatePicker from "sassy-datepicker";
@@ -39,6 +40,8 @@ export default function Launch() {
     isFetching,
     isLoading,
   } = useWeb3Contract();
+
+  const dispatch = useNotification();
 
   const chainId = parseInt(chainIdHex);
 
@@ -142,7 +145,7 @@ export default function Launch() {
   const handleLaunch = async () => {
     const goalInDollars = projectInfo.goal.replace(/[^0-9]/g, "");
     const startDayInSeconds = Math.floor(
-      projectInfo.launchDate().getTime() / 1000
+      projectInfo.launchDate.getTime() / 1000
     );
     const uploadedImage = await client.add(imageFile);
     const url = `https://ipfs.io/ipfs/${uploadedImage.path}`;
@@ -169,9 +172,7 @@ export default function Launch() {
           projectImageUrl: url,
         },
       },
-      onSuccess: () => {
-        console.log("Successful");
-      },
+      onSuccess: handleSuccess,
       onError: (error) => {
         console.log("error");
       },
@@ -198,6 +199,24 @@ export default function Launch() {
     //     onError: (error) => console.log(error),
     // })
   };
+
+  const handleNewNotification = () => {
+    dispatch({
+        type: "info",
+        message: "Transaction Complete!",
+        title: "Transaction Notification",
+        position: "topR",
+        icon: "bell",
+    })
+}
+
+// Probably could add some error handling
+const handleSuccess = async (tx) => {
+    await tx.wait(1)
+    // updateUIValues()
+    handleNewNotification(tx)
+}
+
 
   return (
     <>
