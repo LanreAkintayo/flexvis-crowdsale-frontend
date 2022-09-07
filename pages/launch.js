@@ -3,6 +3,9 @@ import Header from "../components/Header";
 import React, { useEffect, useState } from "react";
 import DatePicker from "react-datepicker";
 import { create } from "ipfs-http-client";
+import { contractAddresses, abi } from "../constants";
+import { useMoralis, useWeb3Contract } from "react-moralis";
+import { ethers } from "ethers";
 
 import "react-datepicker/dist/react-datepicker.css";
 // import DatePicker from "sassy-datepicker";
@@ -27,7 +30,17 @@ const client = create({
 });
 
 export default function Launch() {
-  // Create a reference to the hidden file input element
+  const { Moralis, isWeb3Enabled, chainId: chainIdHex } = useMoralis();
+  const { data:project, runContractFunction:getAllProjects, isFetching, isLoading } =
+    useWeb3Contract();
+  const { data:a, runContractFunction:b} =
+    useWeb3Contract();
+
+  const chainId = parseInt(chainIdHex);
+
+  const crowdfundAddress =
+    chainId in contractAddresses ? contractAddresses[chainId][0] : null;
+
   const hiddenFileInput = React.useRef(null);
   const [imageFile, setImageFile] = useState("");
   const [launchDate, setLaunchDate] = useState("");
@@ -55,9 +68,24 @@ export default function Launch() {
         (item) => ![false, 0, null, "", {}].includes(item)
       ) &&
         isValidDuration &&
-        isValidLaunchDate && isValidGoal
+        isValidLaunchDate &&
+        isValidGoal
     );
   }, [projectInfo, isValidDuration, isValidLaunchDate]);
+
+  // const { runContractFunction: getAllProjects } = useWeb3Contract({
+  //   abi: abi,
+  //   contractAddress: crowdfundAddress, // specify the networkId
+  //   functionName: "getAllProjects",
+  //   params: {},
+  // });
+
+  const { runContractFunction: launch } = useWeb3Contract({
+    abi: abi,
+    contractAddress: crowdfundAddress, // specify the networkId
+    functionName: "launch",
+    params: {},
+  });
 
   // Programatically click the hidden file input element
   // when the Button component is clicked
@@ -94,8 +122,8 @@ export default function Launch() {
       const price = event.target.value;
       let dollarUSLocale = Intl.NumberFormat("en-US");
       // amount = dollarUSLocale.format(price).toString();
-      amount=price
-      
+      amount = price;
+
       setIsValidGoal(() => {
         if (/^\$?\d+(,\d{3})*(\.\d*)?$/.test(amount.toString())) {
           return true;
@@ -109,31 +137,108 @@ export default function Launch() {
         ...prevProjectInfo,
         [event.target.id]:
           event.target.id == "goal" ? amount : event.target.value,
-          [event.target.id]:
+        [event.target.id]:
           event.target.id == "imageSrc"
             ? URL.createObjectURL(imagePath)
-            : event.target.value
+            : event.target.value,
       };
     });
   };
 
+  useEffect(() => {
+    console.log("Project: ", project);
+  }, [project]);
+
   const handleLaunch = async () => {
-    const goalInDollars = projectInfo.goal.replace(/[^0-9]/g, '')
-    console.log("Goal in dollars: ", goalInDollars)
-    const uploadedImage = await client.add(imageFile);
-    const url = `https://ipfs.io/ipfs/${uploadedImage.path}`;
-
-    console.log("abc")
-    console.log("Url: ", url)
-
-
-
-    setProjectInfo((prevProjectInfo) => {
-      return {
-        ...prevProjectInfo,
-        imageSrc: url,
-      };
+    // const projects = await getAllProjects({
+    //   onSuccess: () => {
+    //     console.log("Successful");
+    //   },
+    //   onError: (error) => console.log(error),
+    // });
+    getAllProjects({
+      params: {
+        abi: abi,
+        contractAddress: crowdfundAddress, // specify the networkId
+        functionName: "getAllProjects",
+        params: {},
+      },
     });
+
+    // console.log("Project: ", data);
+
+    // const goalInDollars = projectInfo.goal.replace(/[^0-9]/g, "");
+    // const startDayInSeconds = Math.floor(
+    //   projectInfo.launchDate().getTime() / 1000
+    // );
+    // const uploadedImage = await client.add(imageFile);
+    // const url = `https://ipfs.io/ipfs/${uploadedImage.path}`;
+
+    // console.log("abc");
+    // console.log("Url: ", url);
+
+    // setProjectInfo((prevProjectInfo) => {
+    //   return {
+    //     ...prevProjectInfo,
+    //     imageSrc: url,
+    //   };
+    // });
+
+    // const time = Math.floor(projectInfo.getTime() / 1000);
+    // console.log(time);
+
+    // const { runContractFunction: launch } = useWeb3Contract({
+    //   abi: abi,
+    //   contractAddress: crowdfundAddress, // specify the networkId
+    //   functionName: "launch",
+    //   params: {
+    //     startDay: startDayInSeconds,
+    //     duration: projectInfo.duration,
+    //     goal: ethers.utils.toWei(goalInDollars),
+    //     projectTitle: projectInfo.subtitle,
+    //     projectSubtitle: projectInfo.subtitle,
+    //     projectNote: projectInfo.note,
+    //     projectImageUrl: url,
+    //   },
+    // });
+
+    // runContractFunction(({
+    //   params: {
+    //     abi: abi,
+    //     contractAddress: crowdfundAddress, // specify the networkId
+    //     functionName: "launch",
+    //     params: {
+    //       startDay: startDayInSeconds,
+    //       duration: projectInfo.duration,
+    //       goal: ethers.utils.toWei(goalInDollars),
+    //       projectTitle: projectInfo.subtitle,
+    //       projectSubtitle: projectInfo.subtitle,
+    //       projectNote: projectInfo.note,
+    //       projectImageUrl: url,
+    //     },
+    //   }
+    // }))
+
+    // const { runContractFunction: getAllProjects } = useWeb3Contract({
+    //   abi: abi,
+    //   contractAddress: crowdfundAddress, // specify the networkId
+    //   functionName: "getAllProjects",
+    //   params: {},
+    // });
+
+    // const projects = await getAllProjects({
+    //   onSuccess: () => {console.log("Successful")},
+    //   onError: (error) => console.log(error),
+    // })
+
+    // console.log(projects)
+
+    //   await launch({
+    //     // onComplete:
+    //     // onError:
+    //     onSuccess: () => {console.log("Successful")},
+    //     onError: (error) => console.log(error),
+    // })
   };
 
   return (
@@ -400,7 +505,7 @@ export default function Launch() {
           </div>
         </div>
 
-        {allValid && (
+        {!allValid && (
           <button
             className="flex flex-col w-full items-center my-5 mb-14"
             onClick={handleLaunch}
