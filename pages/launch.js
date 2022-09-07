@@ -6,6 +6,7 @@ import { create } from "ipfs-http-client";
 import { contractAddresses, abi } from "../constants";
 import { useMoralis, useWeb3Contract } from "react-moralis";
 import { ethers } from "ethers";
+import {RotateLoader, ClipLoader} from "react-spinners"
 
 import "react-datepicker/dist/react-datepicker.css";
 // import DatePicker from "sassy-datepicker";
@@ -31,10 +32,13 @@ const client = create({
 
 export default function Launch() {
   const { Moralis, isWeb3Enabled, chainId: chainIdHex } = useMoralis();
-  const { data:project, runContractFunction:getAllProjects, isFetching, isLoading } =
+  const { data: project, runContractFunction: getAllProjects } =
     useWeb3Contract();
-  const { data:a, runContractFunction:b} =
-    useWeb3Contract();
+  const {
+    runContractFunction: launch,
+    isFetching,
+    isLoading,
+  } = useWeb3Contract();
 
   const chainId = parseInt(chainIdHex);
 
@@ -72,20 +76,6 @@ export default function Launch() {
         isValidGoal
     );
   }, [projectInfo, isValidDuration, isValidLaunchDate]);
-
-  // const { runContractFunction: getAllProjects } = useWeb3Contract({
-  //   abi: abi,
-  //   contractAddress: crowdfundAddress, // specify the networkId
-  //   functionName: "getAllProjects",
-  //   params: {},
-  // });
-
-  const { runContractFunction: launch } = useWeb3Contract({
-    abi: abi,
-    contractAddress: crowdfundAddress, // specify the networkId
-    functionName: "launch",
-    params: {},
-  });
 
   // Programatically click the hidden file input element
   // when the Button component is clicked
@@ -150,74 +140,42 @@ export default function Launch() {
   }, [project]);
 
   const handleLaunch = async () => {
-    // const projects = await getAllProjects({
-    //   onSuccess: () => {
-    //     console.log("Successful");
-    //   },
-    //   onError: (error) => console.log(error),
-    // });
-    getAllProjects({
+    const goalInDollars = projectInfo.goal.replace(/[^0-9]/g, "");
+    const startDayInSeconds = Math.floor(
+      projectInfo.launchDate().getTime() / 1000
+    );
+    const uploadedImage = await client.add(imageFile);
+    const url = `https://ipfs.io/ipfs/${uploadedImage.path}`;
+
+    setProjectInfo((prevProjectInfo) => {
+      return {
+        ...prevProjectInfo,
+        imageSrc: url,
+      };
+    });
+
+    launch({
       params: {
         abi: abi,
         contractAddress: crowdfundAddress, // specify the networkId
-        functionName: "getAllProjects",
-        params: {},
+        functionName: "launch",
+        params: {
+          startDay: startDayInSeconds,
+          duration: projectInfo.duration,
+          goal: ethers.utils.toWei(goalInDollars),
+          projectTitle: projectInfo.subtitle,
+          projectSubtitle: projectInfo.subtitle,
+          projectNote: projectInfo.note,
+          projectImageUrl: url,
+        },
+      },
+      onSuccess: () => {
+        console.log("Successful");
+      },
+      onError: (error) => {
+        console.log("error");
       },
     });
-
-    // console.log("Project: ", data);
-
-    // const goalInDollars = projectInfo.goal.replace(/[^0-9]/g, "");
-    // const startDayInSeconds = Math.floor(
-    //   projectInfo.launchDate().getTime() / 1000
-    // );
-    // const uploadedImage = await client.add(imageFile);
-    // const url = `https://ipfs.io/ipfs/${uploadedImage.path}`;
-
-    // console.log("abc");
-    // console.log("Url: ", url);
-
-    // setProjectInfo((prevProjectInfo) => {
-    //   return {
-    //     ...prevProjectInfo,
-    //     imageSrc: url,
-    //   };
-    // });
-
-    // const time = Math.floor(projectInfo.getTime() / 1000);
-    // console.log(time);
-
-    // const { runContractFunction: launch } = useWeb3Contract({
-    //   abi: abi,
-    //   contractAddress: crowdfundAddress, // specify the networkId
-    //   functionName: "launch",
-    //   params: {
-    //     startDay: startDayInSeconds,
-    //     duration: projectInfo.duration,
-    //     goal: ethers.utils.toWei(goalInDollars),
-    //     projectTitle: projectInfo.subtitle,
-    //     projectSubtitle: projectInfo.subtitle,
-    //     projectNote: projectInfo.note,
-    //     projectImageUrl: url,
-    //   },
-    // });
-
-    // runContractFunction(({
-    //   params: {
-    //     abi: abi,
-    //     contractAddress: crowdfundAddress, // specify the networkId
-    //     functionName: "launch",
-    //     params: {
-    //       startDay: startDayInSeconds,
-    //       duration: projectInfo.duration,
-    //       goal: ethers.utils.toWei(goalInDollars),
-    //       projectTitle: projectInfo.subtitle,
-    //       projectSubtitle: projectInfo.subtitle,
-    //       projectNote: projectInfo.note,
-    //       projectImageUrl: url,
-    //     },
-    //   }
-    // }))
 
     // const { runContractFunction: getAllProjects } = useWeb3Contract({
     //   abi: abi,
@@ -509,10 +467,18 @@ export default function Launch() {
           <button
             className="flex flex-col w-full items-center my-5 mb-14"
             onClick={handleLaunch}
+            disabled={!(isFetching || isLoading)}
           >
-            <h1 className="px-5 rounded-md bg-green-300 text-green-800 py-3">
-              Launch Your Project
-            </h1>
+            {!(isFetching || isLoading) ? (
+              <div className="flex bg-green-300 text-green-800 disabled:opacity-50 rounded-md items-center px-3 py-3">
+              <ClipLoader color="#004d00" loading="true" size={30} />
+              <p className="ml-2">Launching Project</p>
+              </div>
+            ) : (
+              <h1 className="px-5 rounded-md bg-green-300 text-green-800 py-3">
+                Launch Your Project
+              </h1>
+            )}
           </button>
         )}
       </section>

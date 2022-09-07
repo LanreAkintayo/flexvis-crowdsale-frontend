@@ -5,7 +5,10 @@ module.exports = {
     "./components/**/*.{js,ts,jsx,tsx}",
   ],
   theme: {
-    extend: {},
+    extend: {
+      opacity:["disabled"],
+      cursor: ["disabled"]
+    },
     fontFamily: {
       sans: ["Montserrat", "sans-serif"],
       // logo: ['Rampart One', "cursive"]
