@@ -7,7 +7,7 @@ import { contractAddresses, abi } from "../constants";
 import { useMoralis, useWeb3Contract } from "react-moralis";
 import { ethers } from "ethers";
 import { RotateLoader, ClipLoader } from "react-spinners";
-import { useNotification } from "web3uikit"
+import { useNotification } from "web3uikit";
 
 import "react-datepicker/dist/react-datepicker.css";
 // import DatePicker from "sassy-datepicker";
@@ -150,12 +150,12 @@ export default function Launch() {
     const uploadedImage = await client.add(imageFile);
     const url = `https://ipfs.io/ipfs/${uploadedImage.path}`;
 
-    setProjectInfo((prevProjectInfo) => {
-      return {
-        ...prevProjectInfo,
-        imageSrc: url,
-      };
-    });
+    // setProjectInfo((prevProjectInfo) => {
+    //   return {
+    //     ...prevProjectInfo,
+    //     imageSrc: url,
+    //   };
+    // });
 
     launch({
       params: {
@@ -165,8 +165,8 @@ export default function Launch() {
         params: {
           startDay: startDayInSeconds,
           duration: projectInfo.duration,
-          goal: ethers.utils.toWei(goalInDollars),
-          projectTitle: projectInfo.subtitle,
+          goal: ethers.utils.parseEther(goalInDollars),
+          projectTitle: projectInfo.title,
           projectSubtitle: projectInfo.subtitle,
           projectNote: projectInfo.note,
           projectImageUrl: url,
@@ -174,7 +174,7 @@ export default function Launch() {
       },
       onSuccess: handleSuccess,
       onError: (error) => {
-        console.log("error");
+        handleFailure(error);
       },
     });
 
@@ -200,23 +200,28 @@ export default function Launch() {
     // })
   };
 
-  const handleNewNotification = () => {
-    dispatch({
-        type: "info",
-        message: "Transaction Complete!",
-        title: "Transaction Notification",
-        position: "topR",
-        icon: "bell",
-    })
-}
-
-// Probably could add some error handling
-const handleSuccess = async (tx) => {
-    await tx.wait(1)
+  // Probably could add some error handling
+  const handleSuccess = async (tx) => {
+    console.log("Success transaction: ", tx);
+    await tx.wait(1);
     // updateUIValues()
-    handleNewNotification(tx)
-}
+    dispatch({
+      type: "success",
+      message: "Transaction Completed!",
+      title: "Transaction Notification",
+      position: "topR",
+    });
+  };
 
+  const handleFailure = async (error) => {
+    console.log("Error: ", error);
+    dispatch({
+      type: "error",
+      message: "Transation Failed",
+      title: "Transaction Notification",
+      position: "topR",
+    });
+  };
 
   return (
     <>
@@ -482,22 +487,20 @@ const handleSuccess = async (tx) => {
           </div>
         </div>
 
-        {!allValid && (
+        {allValid && (
           <button
             className="flex flex-col w-full items-center my-5 mb-14 disabled:cursor-not-allowed disabled:opacity-50"
             onClick={handleLaunch}
-            disabled={(isFetching || isLoading)}
+            disabled={isFetching || isLoading}
           >
-            { (isFetching || isLoading) ? (
+            {isFetching || isLoading ? (
               <div className="flex bg-green-300 text-green-800 rounded-md items-center px-3 py-3">
                 <ClipLoader color="#004d00" loading="true" size={30} />
                 <p className="ml-2">Launching Project</p>
               </div>
             ) : (
               <div className="flex bg-green-300 text-green-800 rounded-md items-center px-3 py-3">
-                <p className="">
-                  Launch Your Project
-                </p>
+                <p className="">Launch Your Project</p>
               </div>
             )}
           </button>
