@@ -494,7 +494,7 @@ export default function Launch() {
             {isFetching || isLoading || promiseInProgress ? (
               <div className="flex bg-green-300 text-green-800 rounded-md items-center px-3 py-3">
                 <ClipLoader color="#004d00" loading="true" size={30} />
-                <p className="ml-2">{promiseInProgress? "Wait a few minute": "Launching Project"}</p>
+                <p className="ml-2">{promiseInProgress ? "Wait a few minute": "Launching Project"}</p>
               </div>
             ) : (
               <div className="flex bg-green-300 text-green-800 rounded-md items-center px-3 py-3">

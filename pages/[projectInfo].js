@@ -2,6 +2,10 @@ import Header from "../components/Header";
 import SupportModal from "../components/SupportModal";
 import { ethers } from "ethers";
 import { useState } from "react";
+import { useMoralis, useWeb3Contract } from "react-moralis";
+import { contractAddresses, abi } from "../constants";
+import { useNotification } from "web3uikit";
+import useSWR, { useSWRConfig } from 'swr'
 
 const supportedTokens = [
   { name: "BNB", src: "/bnb.svg" },
@@ -10,10 +14,26 @@ const supportedTokens = [
   { name: "XRP", src: "/xrp.png" },
 ];
 
+const tokenToAddress = {
+  BNB: "0xae13d989daC2f0dEbFf460aC112a837C89BAa7cd",
+  BUSD: "0xeD24FC36d5Ee211Ea25A80239Fb8C4Cfd80f12Ee",
+  DAI: "0xEC5dCb5Dbf4B114C9d0F65BcCAb49EC54F6A0867",
+  XRP: "0xa83575490D7df4E2F47b7D38ef351a2722cA45b9",
+};
+
 export default function PageInfo({ projectInfo }) {
+  const { Moralis, isWeb3Enabled, chainId: chainIdHex } = useMoralis();
   const [supportModalOpen, setSupportModalOpen] = useState(false);
   const [selectedToken, setSelectedToken] = useState({});
   const [pledgeAmount, setPledgeAmount] = useState();
+  const [isValidAmount, setIsValidAmount] = useState(true);
+  const dispatch = useNotification();
+  const {mutate} = useSWRConfig()
+
+  const chainId = parseInt(chainIdHex);
+
+  const crowdfundAddress =
+    chainId in contractAddresses ? contractAddresses[chainId][0] : null;
 
   const dollarUSLocale = Intl.NumberFormat("en-US");
 
@@ -34,6 +54,12 @@ export default function PageInfo({ projectInfo }) {
     color = "bg-red-600";
   }
 
+  const {
+    runContractFunction: pledge,
+    isFetching,
+    isLoading,
+  } = useWeb3Contract();
+
   const handleSupport = () => {
     setSupportModalOpen(true);
   };
@@ -48,8 +74,62 @@ export default function PageInfo({ projectInfo }) {
     setSelectedToken({ name, src });
   };
 
+  const handleSuccess = async (tx) => {
+    console.log("Success transaction: ", tx);
+    await tx.wait(1);
+    setSupportModalOpen(false)
+    mutate("web3/projects")
+    dispatch({
+      type: "success",
+      message: "Pledging Completed!",
+      title: "Transaction Notification",
+      position: "topR",
+    });
+  };
+
+  const handleFailure = async (error) => {
+    console.log("Error: ", error);
+    dispatch({
+      type: "error",
+      message: "Pledging Failed",
+      title: "Transaction Notification",
+      position: "topR",
+    });
+  };
+
+
+  const handlePledge = () => {
+    const formattedPledgeAmount = ethers.utils.parseEther(
+      pledgeAmount.replace(/[^0-9]/g, "")
+    );
+    const tokenAddress = tokenToAddress[selectedToken.name];
+    console.log(formattedPledgeAmount);
+    console.log(tokenAddress);
+
+    pledge({
+      params: {
+        abi: abi,
+        contractAddress: crowdfundAddress, // specify the networkId
+        functionName: "pledge",
+        params: {
+          _id: projectInfo.id,
+          tokenAddress: "",
+          amount: "",
+        },
+      },
+      onSuccess: handleSuccess,
+      onError: handleFailure
+    });
+  };
+
   const handleOnChange = (event) => {
     const pledgeAmount = event.target.value;
+    setIsValidAmount(() => {
+      if (/^\$?\d+(,\d{3})*(\.\d*)?$/.test(pledgeAmount.toString())) {
+        return true;
+      }
+      return false;
+    });
     setPledgeAmount(pledgeAmount);
   };
 
@@ -133,6 +213,10 @@ export default function PageInfo({ projectInfo }) {
             handleSelectToken={handleSelectToken}
             selectedToken={selectedToken}
             handleOnChange={handleOnChange}
+            isValidAmount={isValidAmount}
+            handlePledge={handlePledge}
+            isFetching={isFetching}
+            isLoading={isLoading}
           />
         </div>
       )}

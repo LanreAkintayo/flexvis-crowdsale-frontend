@@ -1,13 +1,20 @@
 import Dropdown from "./Dropdown";
-import Dropdown2 from "./Dropdown2";
-import Dropdown3 from "./Dropdown3";
+import { RotateLoader, ClipLoader } from "react-spinners";
 
-export default function SupportModal({handleCloseSupportModal, handleSelectToken, selectedToken, handleOnChange}) {
-
+export default function SupportModal({
+  handleCloseSupportModal,
+  handleSelectToken,
+  selectedToken,
+  handleOnChange,
+  isValidAmount,
+  handlePledge,
+  isFetching,
+  isLoading,
+}) {
   // const handleOnChange = (event) => {
   //   const pledgeAmount = event.target.value
   // }
-  
+
   return (
     <div className="fixed inset-0 bg-gray-900 bg-opacity-75 transition-opacity">
       <div
@@ -24,7 +31,7 @@ export default function SupportModal({handleCloseSupportModal, handleSelectToken
                   Support Project
                 </div>
                 <button
-                onClick={handleCloseSupportModal}
+                  onClick={handleCloseSupportModal}
                   type="button"
                   className="text-gray-400 bg-transparent dark:hover:bg-gray-600 dark:hover:text-white hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center"
                   data-modal-toggle="small-modal"
@@ -48,33 +55,57 @@ export default function SupportModal({handleCloseSupportModal, handleSelectToken
                 <p className="text-gray-600 text-sm py-2">
                   Select Token to Pledge with
                 </p>
-                <Dropdown handleSelectToken={handleSelectToken} selectedToken={selectedToken}/>
+                <Dropdown
+                  handleSelectToken={handleSelectToken}
+                  selectedToken={selectedToken}
+                  isValidAmount={isValidAmount}
+                />
                 {/* <Dropdown3 /> */}
               </div>
               <div className="my-5 w-full flex flex-col ">
                 <p className="text-gray-600 text-sm py-2">Enter Amount</p>
                 <div className="w-full flex flex-col border rounded-md p-2">
                   <input
-                  onChange={() => handleOnChange(event)}
+                    onChange={(event) => handleOnChange(event)}
                     type="text"
                     name="text"
                     id="pledgeAmount"
                     placeholder="0.00"
                     className="w-80 block pl-2 font-medium text-lg focus:outline-none rounded-md"
                   />
-                  <p className="self-end text-sm text-gray-600 font-medium">MAX</p>
+                  <p className="self-end text-sm text-gray-600 font-medium">
+                    MAX
+                  </p>
                 </div>
+                {!isValidAmount && (
+                  <p className="text-red-700 test-sm">
+                    <small>
+                      <small>Invalid Amount</small>
+                    </small>
+                  </p>
+                )}
 
                 {/* <Dropdown3 /> */}
               </div>
 
-              <div className="my-5 w-full flex flex-col items-center ">
-                <button
-                  className={`p-2 w-full bg-green-200 text-green-800 text-center rounded-md font-medium text-xl disabled:cursor-not-allowed disabled:opacity-50`}
-                >
-                  Pledge
-                </button>
-              </div>
+              <button
+                className={`p-2 w-full text-green-800 text-center rounded-md font-medium text-xl disabled:cursor-not-allowed disabled:opacity-50`}
+                onClick={handlePledge}
+                disabled={isFetching || isLoading}
+              >
+                {(isFetching || isLoading) ? (
+                  <div className="flex flex-col w-full justify-between bg-green-300 rounded-md items-center px-3 py-3">
+                    <div className="flex">
+                      <ClipLoader color="#004d00" loading="true" size={30} />
+                      <p className="ml-2">Pledging</p>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="flex w-full bg-green-300 rounded-md items-center px-3 py-3">
+                    <p className="w-full">Pledge</p>
+                  </div>
+                )}
+              </button>
             </div>
           </div>
         </div>

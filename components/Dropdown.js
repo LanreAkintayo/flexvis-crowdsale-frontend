@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 
-export default function Dropdown({handleSelectToken, selectedToken}) {
+export default function Dropdown({handleSelectToken, selectedToken, isValidAmount}) {
   const [dropdownState, setDropdownState] = useState(true);
   // const [selectedToken, setSelectedToken] = useState({});
 
