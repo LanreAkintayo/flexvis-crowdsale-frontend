@@ -11,17 +11,12 @@ export default function ProjectCard({ projectInfo }) {
   daysLeft, percentFunded, backers, amountRaisedInDollars, 
    */
   const goal = ethers.utils.formatEther(projectInfo.goal.toString());
-  const amountRaisedInDollars = projectInfo.amountRaisedInDollars;
 
-  const percent = (Number(amountRaisedInDollars) / Number(goal)) * 100;
-  // const percent = 71;
   let color;
 
-  console.log(projectInfo.projectImageUrl);
-
-  if (percent > 70) {
+  if (projectInfo.percentFunded > 70) {
     color = "bg-green-700";
-  } else if (percent > 50) {
+  } else if (projectInfo.percentFunded > 50) {
     color = "bg-yellow-600";
   } else {
     color = "bg-red-600";
@@ -37,6 +32,7 @@ export default function ProjectCard({ projectInfo }) {
           pathname: `/${projectInfo.projectTitle}`,
           query: {
             ...projectInfo,
+            backers: JSON.stringify(projectInfo.backers)
 
           },
           // the data
@@ -54,7 +50,7 @@ export default function ProjectCard({ projectInfo }) {
           <div className="w-full bg-neutral-300 h-2.5 dark:bg-gray-700">
             <div
               className={`${color} h-2.5 `}
-              style={{ width: `${percent}%` }}
+              style={{ width: `${projectInfo.percentFunded}%` }}
             ></div>
           </div>
           <div className=" px-2">
@@ -63,7 +59,7 @@ export default function ProjectCard({ projectInfo }) {
             </h1>
             <p className="text-sm text-gray-800">{projectInfo.projectNote}</p>
             <p className="py-4 text-green-900">
-              {percent}% of ${formattedGoal} Raised{" "}
+              {projectInfo.percentFunded}% of ${formattedGoal} Raised{" "}
             </p>
           </div>
         </div>

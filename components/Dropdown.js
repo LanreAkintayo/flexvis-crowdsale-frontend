@@ -1,13 +1,14 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
-export default function Dropdown() {
-  const [dropdownState, setDropdownState] = useState(false);
-  const [selectedToken, setSelectedToken] = useState({});
+export default function Dropdown({handleSelectToken, selectedToken}) {
+  const [dropdownState, setDropdownState] = useState(true);
+  // const [selectedToken, setSelectedToken] = useState({});
 
   const onButtonClick = () => {
-    console.log("I am here");
     setDropdownState((prev) => !prev);
   };
+
+  // useEffect(() => {console.log("Selected Token: ", selectedToken)}, [selectedToken])
 
   const supportedTokens = [
     { name: "BNB", src: "/bnb.svg" },
@@ -16,7 +17,6 @@ export default function Dropdown() {
     { name: "XRP", src: "/xrp.png" },
   ];
 
-  console.log(selectedToken);
   const Token = () => {
     return (
       <>
@@ -24,10 +24,11 @@ export default function Dropdown() {
           return (
             // <div onClick={() => {console.log(item)}} className="cursor-pointer">{item?.name}</div>
             <li
-              className="mt-2 hover:bg-gray-200"
-              onClick={() =>
-                setSelectedToken({ name: item.name, src: item.src })
-              }
+              className="mt-2 hover:bg-gray-300 cursor-pointer"
+              onClick={() => {
+                handleSelectToken(item.name, item.src);
+                onButtonClick();
+              }}
             >
               <div className="flex px-2 items-center">
                 <div className="w-7 h-7">
@@ -101,7 +102,6 @@ export default function Dropdown() {
           aria-labelledby="dropdownDefault"
         >
           <Token />
-
         </ul>
       </div>
     </>

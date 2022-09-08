@@ -16,10 +16,6 @@ export default function Home() {
 
   const { mutate } = useSWRConfig()
 
-
-  console.log(chainId);
-  console.log(isWeb3Enabled);
-
   return (
     <>
       <section>

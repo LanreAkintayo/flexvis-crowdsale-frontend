@@ -13,7 +13,7 @@ export default function ProjectCardSection() {
   const crowdfundAddress =
     chainId in contractAddresses ? contractAddresses[chainId][0] : null;
 
-  const { runContractFunction: getAllProjects } = useWeb3Contract({
+  const { runContractFunction: getAllProjects, isFetching, isLoading } = useWeb3Contract({
     abi: abi,
     contractAddress: crowdfundAddress,
     functionName: "getAllProjects",
@@ -32,22 +32,26 @@ export default function ProjectCardSection() {
   } = useSWR(
     () => (isWeb3Enabled ? "web3/projects" : null),
     async () => {
-      //   const projects = await getAllProjects({
-      //     onSuccess: (tx) => console.log("all Project", tx),
-      //     onError: (error) => console.log(error),
-      //   });
+        const projects = await getAllProjects({
+          onSuccess: (tx) => console.log("all Project", tx),
+          onError: (error) => console.log(error),
+        });
       const provider = await enableWeb3();
       const crowdfundContract = new ethers.Contract(
         crowdfundAddress,
         abi,
         provider
       );
-      const projects = await crowdfundContract.getAllProjects();
+      // const projects = await crowdfundContract.getAllProjects();
 
       const allProjects = projects.map(async (project) => {
         const amountRaisedInDollars =
           await crowdfundContract.getTotalAmountRaisedInDollars(project.id);
+        const backers =  await crowdfundContract.getBackers(project.id) 
 
+        console.log("Backers: ", backers)
+
+        
         let secondsLeft;
         let status;
         
@@ -66,12 +70,7 @@ export default function ProjectCardSection() {
           secondsLeft = 0;
         }
 
-        const percentFunded = (Number(amountRaisedInDollars) / Number(goal)) * 100;
-        
-        /*
-  
-  daysLeft, percentFunded, backers, amountRaisedInDollars, 
-   */
+        const percentFunded = (Number(amountRaisedInDollars) / Number(project.goal)) * 100;      
 
         return {
           ...project,
@@ -82,7 +81,8 @@ export default function ProjectCardSection() {
           startDay: project.startDay.toString(),
           secondsLeft,
           status,
-          percentFunded
+          percentFunded,
+          backers
         };
       });
 
@@ -93,9 +93,6 @@ export default function ProjectCardSection() {
     }
   );
 
-  //   useEffect(() => {
-  //     console.log("Amount raised in dollars: ", amountRaisedInDollars);
-  //   }, [amountRaisedInDollars]);
 
   return (
     <section className="pl-5 w-full">

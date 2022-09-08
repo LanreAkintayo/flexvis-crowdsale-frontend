@@ -2,7 +2,12 @@ import Dropdown from "./Dropdown";
 import Dropdown2 from "./Dropdown2";
 import Dropdown3 from "./Dropdown3";
 
-export default function SupportModal() {
+export default function SupportModal({handleCloseSupportModal, handleSelectToken, selectedToken, handleOnChange}) {
+
+  // const handleOnChange = (event) => {
+  //   const pledgeAmount = event.target.value
+  // }
+  
   return (
     <div className="fixed inset-0 bg-gray-900 bg-opacity-75 transition-opacity">
       <div
@@ -19,6 +24,7 @@ export default function SupportModal() {
                   Support Project
                 </div>
                 <button
+                onClick={handleCloseSupportModal}
                   type="button"
                   className="text-gray-400 bg-transparent dark:hover:bg-gray-600 dark:hover:text-white hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center"
                   data-modal-toggle="small-modal"
@@ -42,16 +48,17 @@ export default function SupportModal() {
                 <p className="text-gray-600 text-sm py-2">
                   Select Token to Pledge with
                 </p>
-                <Dropdown />
+                <Dropdown handleSelectToken={handleSelectToken} selectedToken={selectedToken}/>
                 {/* <Dropdown3 /> */}
               </div>
               <div className="my-5 w-full flex flex-col ">
                 <p className="text-gray-600 text-sm py-2">Enter Amount</p>
                 <div className="w-full flex flex-col border rounded-md p-2">
                   <input
+                  onChange={() => handleOnChange(event)}
                     type="text"
                     name="text"
-                    id="text"
+                    id="pledgeAmount"
                     placeholder="0.00"
                     className="w-80 block pl-2 font-medium text-lg focus:outline-none rounded-md"
                   />
