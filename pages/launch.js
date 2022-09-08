@@ -44,6 +44,7 @@ export default function Launch() {
   const dispatch = useNotification();
 
   const chainId = parseInt(chainIdHex);
+  const [currentUrl, setCurrentUrl] = useState("");
 
   const crowdfundAddress =
     chainId in contractAddresses ? contractAddresses[chainId][0] : null;
@@ -66,8 +67,8 @@ export default function Launch() {
   const [isValidGoal, setIsValidGoal] = useState(true);
 
   useEffect(() => {
-    console.log(projectInfo);
-  }, [projectInfo]);
+    console.log("Here is the current url: ", currentUrl);
+  }, [currentUrl]);
 
   useEffect(() => {
     setAllValid(
@@ -86,8 +87,7 @@ export default function Launch() {
     hiddenFileInput.current.click();
   };
 
-  const handleOnChange = (event) => {
-   
+  const handleOnChange = async (event) => {
     let imagePath;
     let amount;
 
@@ -95,7 +95,23 @@ export default function Launch() {
       imagePath = event.target.files[0];
       setImageFile(imagePath);
       console.log("imagePath: ", imagePath);
+
+      let promise = new Promise(async (resolve, reject) => {
+        const uploadedImage = await trackPromise(client.add(imageFile));
+        resolve(uploadedImage);
+      });
+
+      promise
+        .then((uploadedImage) => {
+          const url = `https://cloudflare-ipfs.com/ipfs/${uploadedImage.path}`;
+          console.log(url);
+          setCurrentUrl(url);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
     }
+
     if (event.target.id == "duration") {
       const duration = event.target.value;
       setIsValidDuration(() => {
@@ -494,7 +510,11 @@ export default function Launch() {
             {isFetching || isLoading || promiseInProgress ? (
               <div className="flex bg-green-300 text-green-800 rounded-md items-center px-3 py-3">
                 <ClipLoader color="#004d00" loading="true" size={30} />
-                <p className="ml-2">{promiseInProgress ? "Wait a few minute": "Launching Project"}</p>
+                <p className="ml-2">
+                  {promiseInProgress
+                    ? "Wait a few minute"
+                    : "Launching Project"}
+                </p>
               </div>
             ) : (
               <div className="flex bg-green-300 text-green-800 rounded-md items-center px-3 py-3">

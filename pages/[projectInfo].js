@@ -113,8 +113,8 @@ export default function PageInfo({ projectInfo }) {
         functionName: "pledge",
         params: {
           _id: projectInfo.id,
-          tokenAddress: "",
-          amount: "",
+          tokenAddress: tokenAddress,
+          amount: formattedPledgeAmount,
         },
       },
       onSuccess: handleSuccess,
