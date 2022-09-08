@@ -1,4 +1,5 @@
 const contractAddresses = require("./contractAddresses.json")
 const abi = require("./abi.json")
+const DEPLOYER = "0xDD4c43c13e6F1b2374Ed9AAabBA7D56Bb4a68A03"
 
-module.exports ={ contractAddresses, abi }
+module.exports ={ contractAddresses, abi, DEPLOYER}

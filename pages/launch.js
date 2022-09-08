@@ -8,6 +8,7 @@ import { useMoralis, useWeb3Contract } from "react-moralis";
 import { ethers } from "ethers";
 import { RotateLoader, ClipLoader } from "react-spinners";
 import { useNotification } from "web3uikit";
+import { usePromiseTracker, trackPromise } from "react-promise-tracker";
 
 import "react-datepicker/dist/react-datepicker.css";
 // import DatePicker from "sassy-datepicker";
@@ -33,13 +34,12 @@ const client = create({
 
 export default function Launch() {
   const { Moralis, isWeb3Enabled, chainId: chainIdHex } = useMoralis();
-  const { data: project, runContractFunction: getAllProjects } =
-    useWeb3Contract();
   const {
     runContractFunction: launch,
     isFetching,
     isLoading,
   } = useWeb3Contract();
+  const { promiseInProgress } = usePromiseTracker();
 
   const dispatch = useNotification();
 
@@ -87,9 +87,7 @@ export default function Launch() {
   };
 
   const handleOnChange = (event) => {
-    console.log("Secret Key: ", process.env.NEXT_PUBLIC_PROJECT_ID);
-    console.log("abc");
-
+   
     let imagePath;
     let amount;
 
@@ -138,17 +136,17 @@ export default function Launch() {
     });
   };
 
-  useEffect(() => {
-    console.log("Project: ", project);
-  }, [project]);
+  // useEffect(() => {
+  //   console.log("Project: ", project);
+  // }, [project]);
 
   const handleLaunch = async () => {
     const goalInDollars = projectInfo.goal.replace(/[^0-9]/g, "");
     const startDayInSeconds = Math.floor(
       projectInfo.launchDate.getTime() / 1000
     );
-    const uploadedImage = await client.add(imageFile);
-    const url = `https://ipfs.io/ipfs/${uploadedImage.path}`;
+    const uploadedImage = await trackPromise(client.add(imageFile));
+    const url = `https://cloudflare-ipfs.com/ipfs/${uploadedImage.path}`;
 
     // setProjectInfo((prevProjectInfo) => {
     //   return {
@@ -491,12 +489,12 @@ export default function Launch() {
           <button
             className="flex flex-col w-full items-center my-5 mb-14 disabled:cursor-not-allowed disabled:opacity-50"
             onClick={handleLaunch}
-            disabled={isFetching || isLoading}
+            disabled={isFetching || isLoading || promiseInProgress}
           >
-            {isFetching || isLoading ? (
+            {isFetching || isLoading || promiseInProgress ? (
               <div className="flex bg-green-300 text-green-800 rounded-md items-center px-3 py-3">
                 <ClipLoader color="#004d00" loading="true" size={30} />
-                <p className="ml-2">Launching Project</p>
+                <p className="ml-2">{promiseInProgress? "Wait a few minute": "Launching Project"}</p>
               </div>
             ) : (
               <div className="flex bg-green-300 text-green-800 rounded-md items-center px-3 py-3">
