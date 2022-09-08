@@ -1,7 +1,10 @@
 import Header from "../components/Header";
 import SupportModal from "../components/SupportModal";
 
-export default function PageInfo() {
+export default function PageInfo({projectInfo}) {
+
+  console.log("Project Info: ", projectInfo)
+
   return (
     <>
       <section>
@@ -11,9 +14,9 @@ export default function PageInfo() {
         </div>
       </section>
       <section>
-        <h1 className="w-full text-center pt-3 text-3xl">Flying To Mars</h1>
+        <h1 className="w-full text-center pt-3 text-3xl">{projectInfo.projectTitle}</h1>
         <p className="text-center text-gray-800">
-          Mars, aside from earth is another suitable planet to travel to.{" "}
+         {projectInfo.projectSubtitle}
         </p>
         <div className="flex flex-col lg:flex-row mt-11">
           <div className="flex flex-col lg:w-7/12 px-8">
@@ -26,7 +29,7 @@ export default function PageInfo() {
             <div className="w-full h-96">
               <img
                 alt="..."
-                src="/bg1.jpg"
+                src={projectInfo.projectImageUrl}
                 className="object-cover w-full h-full"
               />
             </div>
@@ -36,14 +39,7 @@ export default function PageInfo() {
                 Why do I need this fund?
               </h1>
               <p>
-                So, they always say that everyone has a purpose of being in this
-                earth. It took me a very long time before I discovered my
-                purpose of existing on earth. After pondering over and over, I
-                decided that before I die, I'm gonna fulfill the purpose of my
-                existence. <br />
-                <br /> So, My purpose is to travel to all the planet in the
-                world. We all know that we currently have two planets that we
-                can live in, that is Earth and Mars.
+                {projectInfo.projectNote}
               </p>
             </div>
           </div>
@@ -124,4 +120,31 @@ export default function PageInfo() {
       </footer>
     </>
   );
+}
+
+
+export async function getServerSideProps(context) {
+
+
+  const query = context.query;
+
+  // const image = JSON.parse(query.image);
+
+  // const availableAmountInContract = JSON.parse(query.availableAmountInContract);
+  // const totalBorrowedInContract = JSON.parse(query.totalBorrowedInContract);
+  // const totalSuppliedInContract = JSON.parse(query.totalSuppliedInContract);
+  // const userTokenBorrowedAmount = JSON.parse(query.userTokenBorrowedAmount);
+  // const userTokenLentAmount = JSON.parse(query.userTokenLentAmount);
+  // const walletBalance = JSON.parse(query.walletBalance);
+
+  const projectInfo = {
+    ...query,
+  };
+
+
+  return {
+    props: {
+      projectInfo
+    },
+  };
 }

@@ -50,6 +50,7 @@ export default function ProjectCardSection() {
 
         let secondsLeft;
         let status;
+        
 
         if (Number(new Date().getSeconds()) > Number(project.endDay)) {
           status = "Closed";
@@ -65,12 +66,29 @@ export default function ProjectCardSection() {
           secondsLeft = 0;
         }
 
-        return { ...project, amountRaisedInDollars, secondsLeft, status };
+        const percentFunded = (Number(amountRaisedInDollars) / Number(goal)) * 100;
+        
+        /*
+  
+  daysLeft, percentFunded, backers, amountRaisedInDollars, 
+   */
+
+        return {
+          ...project,
+          amountRaisedInDollars: amountRaisedInDollars.toString(),
+          endDay: project.endDay.toString(),
+          goal: project.goal.toString(),
+          id: project.id.toString(),
+          startDay: project.startDay.toString(),
+          secondsLeft,
+          status,
+          percentFunded
+        };
       });
 
-      const resolved = await Promise.all(allProjects)
+      const resolved = await Promise.all(allProjects);
 
-      console.log("resolved: ",resolved)
+      console.log("resolved: ", resolved);
       return resolved;
     }
   );
