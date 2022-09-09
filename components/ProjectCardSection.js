@@ -1,4 +1,4 @@
-import { useMoralis, useWeb3Contract } from "react-moralis";
+import { useMoralis, useWeb3Contract, useChain } from "react-moralis";
 import { useEffect, useState } from "react";
 import ProjectCard from "../components/ProjectCard";
 import useSWR, { useSWRConfig } from "swr";
@@ -7,6 +7,7 @@ import { ethers } from "ethers";
 
 export default function ProjectCardSection() {
   const { isWeb3Enabled, chainId: chainIdHex, enableWeb3 } = useMoralis();
+  const { switchNetwork, chain, account } = useChain();
 
   const chainId = parseInt(chainIdHex);
 
@@ -122,7 +123,7 @@ export default function ProjectCardSection() {
               //     },
               //   });
 
-              return <ProjectCard projectInfo={projectInfo} />;
+              return <ProjectCard key={projectInfo.id} projectInfo={projectInfo} />;
             })}
           </div>
         )}

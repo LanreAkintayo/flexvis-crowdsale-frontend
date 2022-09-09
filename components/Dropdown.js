@@ -24,6 +24,7 @@ export default function Dropdown({handleSelectToken, selectedToken, isValidAmoun
           return (
             // <div onClick={() => {console.log(item)}} className="cursor-pointer">{item?.name}</div>
             <li
+            key={item["name"]}
               className="mt-2 hover:bg-gray-300 cursor-pointer"
               onClick={() => {
                 handleSelectToken(item.name, item.src);

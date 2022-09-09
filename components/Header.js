@@ -100,19 +100,20 @@ export default function Header() {
                 </Link>
 
                 <Link href="/launch">
-                  <a className="sm:mx-4 mx-2 text-white font-semibold hover:text-green-500 ">
+                  <a className="sm:mx-4 mx-2 w-full text-white font-semibold hover:text-green-500 ">
                     Get Funded
                   </a>
                 </Link>
               </>
             )}
 
-            <div className="text-white">
+            <div className="text-white flex flex-col w-full items-start">
               {/* <Button type="button" text="Connect Wallet" /> */}
               <div className="">
                 {" "}
                 <ConnectButton text="This is a button" />
               </div>
+              {/* <button className=" text-red-700 p-2 text-sm my-1 cursor-pointer">Wrong Network</button> */}
             </div>
             {isBreakpoint && (
               <div
