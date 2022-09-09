@@ -7,6 +7,7 @@ import { contractAddresses, abi, erc20Abi, wbnbAbi } from "../constants";
 import { useNotification } from "web3uikit";
 import useSWR, { useSWRConfig } from 'swr'
 import {trackPromise, usePromiseTracker } from "react-promise-tracker"
+// import { getAllProjects } from "../lib/projects";
 
 const supportedTokens = [
   { name: "BNB", src: "/bnb.svg" },
@@ -31,6 +32,7 @@ export default function PageInfo({ projectInfo }) {
   const dispatch = useNotification();
   const {mutate} = useSWRConfig()
 
+
   // console.log("Seconds Left: ", projectInfo.secondsLeft)
   // // 1662521824
   // console.log("Current Time: ", Math.floor(Number(new Date().getTime() / 1000)))
@@ -53,6 +55,8 @@ export default function PageInfo({ projectInfo }) {
     .toString();
 
   let color;
+
+  console.log("Thees are all the projects: ", allProjects)
 
   if (projectInfo.percentFunded > 70) {
     color = "bg-green-700";
@@ -343,3 +347,13 @@ export async function getServerSideProps(context) {
     },
   };
 }
+
+
+
+// export async function getStaticPaths() {
+//   const paths = await getAllProjects();
+//   return {
+//     paths,
+//     fallback: false,
+//   };
+// }
