@@ -10,8 +10,9 @@ export default function ProjectCardSection() {
 
   const chainId = parseInt(chainIdHex);
 
+  const length = contractAddresses[chainId]?.length
   const crowdfundAddress =
-    chainId in contractAddresses ? contractAddresses[chainId][0] : null;
+    chainId in contractAddresses ? contractAddresses[chainId][length-1] : null;
 
   const { runContractFunction: getAllProjects, isFetching, isLoading } = useWeb3Contract({
     abi: abi,
@@ -32,6 +33,7 @@ export default function ProjectCardSection() {
   } = useSWR(
     () => (isWeb3Enabled ? "web3/projects" : null),
     async () => {
+      console.log("We are here again")
         const projects = await getAllProjects({
           onSuccess: (tx) => console.log("all Project", tx),
           onError: (error) => console.log(error),
@@ -54,17 +56,17 @@ export default function ProjectCardSection() {
         
         let secondsLeft;
         let status;
-        
+    
 
-        if (Number(new Date().getSeconds()) > Number(project.endDay)) {
+        if (Math.floor(Number(new Date().getTime() / 1000)) > Number(project.endDay)) {
           status = "Closed";
           secondsLeft = 0;
         } else if (
-          Number(new Date().getSeconds()) >= Number(project.startDay)
+          Number(Math.floor(Number(new Date().getTime() / 1000))) >= Number(project.startDay)
         ) {
           status = "Active";
           secondsLeft =
-            Number(project.endDay) - Number(new Date().getSeconds());
+            Number(project.endDay) - Number(Math.floor(Number(new Date().getTime() / 1000)));
         } else {
           status = "Pending";
           secondsLeft = 0;
@@ -81,7 +83,7 @@ export default function ProjectCardSection() {
           startDay: project.startDay.toString(),
           secondsLeft,
           status,
-          percentFunded,
+          percentFunded : percentFunded >=100 ? 100 : Math.floor(percentFunded),
           backers
         };
       });

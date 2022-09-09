@@ -46,8 +46,11 @@ export default function Launch() {
   const chainId = parseInt(chainIdHex);
   const [currentUrl, setCurrentUrl] = useState("");
 
+  const length = contractAddresses[chainId]?.length;
   const crowdfundAddress =
-    chainId in contractAddresses ? contractAddresses[chainId][0] : null;
+    chainId in contractAddresses
+      ? contractAddresses[chainId][length - 1]
+      : null;
 
   const hiddenFileInput = React.useRef(null);
   const [imageFile, setImageFile] = useState("");
@@ -76,7 +79,7 @@ export default function Launch() {
         (item) => ![false, 0, null, "", {}].includes(item)
       ) &&
         isValidDuration &&
-        isValidLaunchDate &&
+        // isValidLaunchDate &&
         isValidGoal
     );
   }, [projectInfo, isValidDuration, isValidLaunchDate]);
@@ -88,6 +91,7 @@ export default function Launch() {
   };
 
   const handleOnChange = async (event) => {
+    console.log("Thread is here");
     let imagePath;
     let amount;
 
@@ -96,20 +100,27 @@ export default function Launch() {
       setImageFile(imagePath);
       console.log("imagePath: ", imagePath);
 
-      let promise = new Promise(async (resolve, reject) => {
-        const uploadedImage = await trackPromise(client.add(imageFile));
-        resolve(uploadedImage);
-      });
+      // const uploadedImage = await trackPromise(client.add(imageFile));
+      // const url = `https://cloudflare-ipfs.com/ipfs/${uploadedImage.path}`;
+      // console.log("This must display: ", url);
+      // setCurrentUrl(url);
 
-      promise
-        .then((uploadedImage) => {
-          const url = `https://cloudflare-ipfs.com/ipfs/${uploadedImage.path}`;
-          console.log(url);
-          setCurrentUrl(url);
-        })
-        .catch((error) => {
-          console.log(error);
-        });
+      // let promise = new Promise(async (resolve, reject) => {
+      //   const uploadedImage = await client.add(imageFile);
+      //   console.log("Inside promise: ", uploadedImage)
+      //   resolve(uploadedImage);
+      // });
+
+      // promise
+      //   .then((uploadedImage) => {
+      //     console.log("Iniside then: ", uploadedImage)
+      //     const url = `https://cloudflare-ipfs.com/ipfs/${uploadedImage.path}`;
+      //     console.log(url);
+      //     setCurrentUrl(url);
+      //   })
+      //   .catch((error) => {
+      //     console.log(error);
+      //   });
     }
 
     if (event.target.id == "duration") {
@@ -161,6 +172,9 @@ export default function Launch() {
     const startDayInSeconds = Math.floor(
       projectInfo.launchDate.getTime() / 1000
     );
+
+    console.log(startDayInSeconds);
+
     const uploadedImage = await trackPromise(client.add(imageFile));
     const url = `https://cloudflare-ipfs.com/ipfs/${uploadedImage.path}`;
 
@@ -184,6 +198,7 @@ export default function Launch() {
           projectSubtitle: projectInfo.subtitle,
           projectNote: projectInfo.note,
           projectImageUrl: url,
+          // projectImageUrl: currentUrl,
         },
       },
       onSuccess: handleSuccess,
@@ -217,7 +232,7 @@ export default function Launch() {
   // Probably could add some error handling
   const handleSuccess = async (tx) => {
     console.log("Success transaction: ", tx);
-    await tx.wait(1);
+    await trackPromise(tx.wait(1));
     // updateUIValues()
     dispatch({
       type: "success",
@@ -419,14 +434,14 @@ export default function Launch() {
                         }}
                       />
                     </div>
-                    {!isValidLaunchDate && (
+                    {/* {!isValidLaunchDate && (
                       <p className="text-red-700 text-sm">
                         <small>
                           The Launch date should be greater than the current
                           date
                         </small>
                       </p>
-                    )}
+                    )} */}
                   </div>
                 </div>
               </div>
@@ -512,7 +527,7 @@ export default function Launch() {
                 <ClipLoader color="#004d00" loading="true" size={30} />
                 <p className="ml-2">
                   {promiseInProgress
-                    ? "Wait a few minute"
+                    ? "Wait a few Seconds"
                     : "Launching Project"}
                 </p>
               </div>

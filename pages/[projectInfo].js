@@ -3,9 +3,10 @@ import SupportModal from "../components/SupportModal";
 import { ethers } from "ethers";
 import { useState } from "react";
 import { useMoralis, useWeb3Contract } from "react-moralis";
-import { contractAddresses, abi } from "../constants";
+import { contractAddresses, abi, erc20Abi, wbnbAbi } from "../constants";
 import { useNotification } from "web3uikit";
 import useSWR, { useSWRConfig } from 'swr'
+import {trackPromise, usePromiseTracker } from "react-promise-tracker"
 
 const supportedTokens = [
   { name: "BNB", src: "/bnb.svg" },
@@ -22,7 +23,7 @@ const tokenToAddress = {
 };
 
 export default function PageInfo({ projectInfo }) {
-  const { Moralis, isWeb3Enabled, chainId: chainIdHex } = useMoralis();
+  const { Moralis, isWeb3Enabled, chainId: chainIdHex, enableWeb3, account } = useMoralis();
   const [supportModalOpen, setSupportModalOpen] = useState(false);
   const [selectedToken, setSelectedToken] = useState({});
   const [pledgeAmount, setPledgeAmount] = useState();
@@ -30,10 +31,17 @@ export default function PageInfo({ projectInfo }) {
   const dispatch = useNotification();
   const {mutate} = useSWRConfig()
 
+  // console.log("Seconds Left: ", projectInfo.secondsLeft)
+  // // 1662521824
+  // console.log("Current Time: ", Math.floor(Number(new Date().getTime() / 1000)))
+  // console.log("End day: ", projectInfo.endDay)
+  // console.log("Start Day: ", projectInfo.startDay)
+
   const chainId = parseInt(chainIdHex);
 
+  const length = contractAddresses[chainId]?.length
   const crowdfundAddress =
-    chainId in contractAddresses ? contractAddresses[chainId][0] : null;
+    chainId in contractAddresses ? contractAddresses[chainId][length-1] : null;
 
   const dollarUSLocale = Intl.NumberFormat("en-US");
 
@@ -76,15 +84,16 @@ export default function PageInfo({ projectInfo }) {
 
   const handleSuccess = async (tx) => {
     console.log("Success transaction: ", tx);
-    await tx.wait(1);
+    await trackPromise(tx.wait(1));
     setSupportModalOpen(false)
-    mutate("web3/projects")
     dispatch({
       type: "success",
       message: "Pledging Completed!",
       title: "Transaction Notification",
       position: "topR",
     });
+
+    await mutate("web3/projects")
   };
 
   const handleFailure = async (error) => {
@@ -98,14 +107,57 @@ export default function PageInfo({ projectInfo }) {
   };
 
 
-  const handlePledge = () => {
+  const handlePledge = async () => {
+    const provider = await enableWeb3();
+    
+    // const projects = await crowdfundContract.getAllProjects();
+
     const formattedPledgeAmount = ethers.utils.parseEther(
-      pledgeAmount.replace(/[^0-9]/g, "")
+      pledgeAmount.replace(/[^0-9.]/g, "")
     );
     const tokenAddress = tokenToAddress[selectedToken.name];
-    console.log(formattedPledgeAmount);
+    console.log(formattedPledgeAmount.toString());
     console.log(tokenAddress);
 
+    const signer = provider.getSigner(account)
+
+    const crowdfundContract = new ethers.Contract(
+      crowdfundAddress,
+      abi,
+      provider
+    );
+    const tokensSupported = await crowdfundContract.getSupportedTokensAddress()
+    console.log("Tokens Supported: ", tokensSupported)
+ 
+    if (tokenAddress == tokenToAddress["BNB"]){
+      const wbnb = new ethers.Contract(
+        tokenAddress,
+        wbnbAbi,
+        provider
+      );
+
+
+      const depositTx = await trackPromise(wbnb.connect(signer).deposit({value: formattedPledgeAmount}))
+      await trackPromise(depositTx.wait(1))
+
+      const approveTx = await trackPromise(wbnb.connect(signer).approve(crowdfundAddress, formattedPledgeAmount))
+      await trackPromise(approveTx.wait(1))
+
+      console.log("Balance of Account: ", await wbnb.balanceOf(account))
+
+    }else{
+      const erc20 = new ethers.Contract(
+        tokenAddress,
+        erc20Abi,
+        provider
+      );
+      console.log("Balance of token Account: ", await erc20.balanceOf(account))
+
+      const approveTx = await trackPromise(erc20.connect(signer).approve(crowdfundAddress, formattedPledgeAmount))  
+      await trackPromise(approveTx.wait(1))
+    }
+
+    console.log("About to pledge")
     pledge({
       params: {
         abi: abi,
@@ -114,7 +166,7 @@ export default function PageInfo({ projectInfo }) {
         params: {
           _id: projectInfo.id,
           tokenAddress: tokenAddress,
-          amount: formattedPledgeAmount,
+          amount: formattedPledgeAmount
         },
       },
       onSuccess: handleSuccess,

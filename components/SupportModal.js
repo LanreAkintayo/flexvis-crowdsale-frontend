@@ -1,5 +1,6 @@
 import Dropdown from "./Dropdown";
 import { RotateLoader, ClipLoader } from "react-spinners";
+import { usePromiseTracker } from "react-promise-tracker";
 
 export default function SupportModal({
   handleCloseSupportModal,
@@ -13,6 +14,7 @@ export default function SupportModal({
 }) {
   // const handleOnChange = (event) => {
   //   const pledgeAmount = event.target.value
+  const { promiseInProgress } = usePromiseTracker();
   // }
 
   return (
@@ -91,13 +93,15 @@ export default function SupportModal({
               <button
                 className={`p-2 w-full text-green-800 text-center rounded-md font-medium text-xl disabled:cursor-not-allowed disabled:opacity-50`}
                 onClick={handlePledge}
-                disabled={isFetching || isLoading}
+                disabled={isFetching || isLoading || promiseInProgress}
               >
-                {(isFetching || isLoading) ? (
+                {(isFetching || isLoading || promiseInProgress) ? (
                   <div className="flex flex-col w-full justify-between bg-green-300 rounded-md items-center px-3 py-3">
                     <div className="flex">
                       <ClipLoader color="#004d00" loading="true" size={30} />
-                      <p className="ml-2">Pledging</p>
+                      <p className="ml-2"> {promiseInProgress
+                    ? "Wait a few Seconds"
+                    : "Pledging"}</p>
                     </div>
                   </div>
                 ) : (
