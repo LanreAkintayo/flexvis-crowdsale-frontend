@@ -256,13 +256,13 @@ export default function Launch() {
     <>
       <Header />
       <section>
-        <div className="w-full flex my-5 text-xl flex-col items-center">
-          <h1>Make it easy for people to learn about your project</h1>
+        <div className="w-full flex my-5 text-base px-3  md:text-xl flex-col items-center">
+          <h1 className="text-center">Make it easy for people to learn about your project</h1>
         </div>
-        <div className="flex flex-col md:flex-row border-t my-11 border-gray-300 py-4 px-16 ">
+        <div className="flex flex-col md:flex-row border-t my-11 border-gray-300 py-4 md:px-16 px-5 ">
           <div className="md:w-5/12 ">
             <h1>Project Title</h1>
-            <p className="text-sm text-gray-600">
+            <p className="md:text-sm text-xs text-gray-600">
               Write a clear, brief title and subtitle to help people quickly
               understand your project. Both will appear on your project and
               pre-launch pages. <br />
@@ -283,7 +283,7 @@ export default function Launch() {
                 name="text"
                 id="title"
                 placeholder="Write a short Title"
-                className="w-96 block p-2 text-sm mt-1 border border-gray-100 focus:outline-none rounded-md"
+                className="md:w-96 w-full block p-2 md:text-sm text-xs mt-1 border border-gray-300 focus:outline-none rounded-md"
               />
             </div>
 
@@ -297,16 +297,16 @@ export default function Launch() {
                 id="subtitle"
                 maxLength="100"
                 placeholder="A short subtitle is going to help"
-                className="w-96 block p-2 text-sm mt-1 border border-gray-100 focus:outline-none rounded-md"
+                className="md:w-96 w-full block p-2 md:text-sm text-xs mt-1 border border-gray-300 focus:outline-none rounded-md"
               />
             </div>
           </div>
         </div>
 
-        <div className="flex md:flex-row flex-col border-t my-11 border-gray-300 py-4 px-16 ">
+        <div className="flex md:flex-row flex-col border-t my-11 border-gray-300 py-4 md:px-16 px-5 ">
           <div className="md:w-5/12 ">
-            <h1>Description (Why do you need this fund)</h1>
-            <p className="text-sm text-gray-600">
+            <h1 className="">Description (Why do you need this fund)</h1>
+            <p className="md:text-sm text-xs text-gray-600">
               Write a note on why you choose to launch a campaign. This is
               really going to help in getting the attention of potential
               backers.
@@ -321,16 +321,16 @@ export default function Launch() {
                 wrap="soft"
                 placeholder="Write a short note"
                 id="note"
-                className="w-full  h-60 text-clip block p-2 text-sm mt-1 border border-gray-100 focus:outline-none rounded-md"
+                className="w-full h-40 md:h-60 text-clip block p-2 md:text-sm text-xs mt-1 border border-gray-300 focus:outline-none rounded-md"
               ></textarea>
             </div>
           </div>
         </div>
 
-        <div className="flex md:flex-row flex-col border-t my-11 border-gray-300 py-4 px-16 ">
+        <div className="flex md:flex-row flex-col border-t my-11 border-gray-300 py-4 md:px-16 px-5">
           <div className="md:w-5/12 ">
             <h1>Project Image</h1>
-            <p className="text-sm text-gray-600">
+            <p className="md:text-sm text-xs text-gray-600">
               Add an image that clearly represents your project. Choose one that
               looks good at different sizes—it’ll appear on your project page,
               across the website
@@ -340,7 +340,7 @@ export default function Launch() {
           </div>
           <div className="md:w-7/12 md:px-11 ">
             <div className="">
-              <div className="border border-gray-300 h-80 w-full hover:bg-gray-200">
+              <div className="border border-gray-300 h-40 md:h-80 w-full hover:bg-gray-200">
                 <button
                   className="w-full h-full"
                   id="image"
@@ -357,7 +357,7 @@ export default function Launch() {
                   ) : (
                     <div>
                       <p className="text-sm">Select a File</p>
-                      <p className="text-sm text-gray-500">
+                      <p className="text-sm text-gray-500 px-2">
                         <small>It must be a JPG, PNG, GIF, TIFF, or BMP.</small>
                       </p>
                     </div>
@@ -369,17 +369,17 @@ export default function Launch() {
                   ref={hiddenFileInput}
                   style={{ display: "none" }}
                   onChange={handleOnChange}
-                  className="w-80 block p-2 text-sm mt-1 border border-gray-100 focus:outline-none rounded-md"
+                  className="w-80 block p-2 text-sm mt-1 border border-gray-300 focus:outline-none rounded-md"
                 />
               </div>
             </div>
           </div>
         </div>
 
-        <div className="flex md:flex-row flex-col border-t my-11 border-gray-300 py-4 px-16 ">
+        <div className="flex md:flex-row flex-col border-t my-11 border-gray-300 py-4 md:px-16 px-5 ">
           <div className="md:w-5/12 ">
             <h1>Launch Date</h1>
-            <p className="text-sm text-gray-600">
+            <p className="md:text-sm text-xs text-gray-600">
               Select a date you want your project to be launched. Project will
               not appear on the website until the launch date.
               <br />
@@ -411,7 +411,7 @@ export default function Launch() {
 
                       <DatePicker
                         id="launchDate"
-                        className=" text-gray-900 bg-gray-50 p-2 sm:text-sm outline-none "
+                        className=" text-gray-900 md:w-60 w-40 bg-gray-50 p-2 sm:text-sm outline-none "
                         selected={projectInfo.launchDate}
                         onChange={(date) => {
                           const dateInMilliseconds = date.getTime();
@@ -449,19 +449,19 @@ export default function Launch() {
           </div>
         </div>
 
-        <div className="flex border-t mt-11 border-gray-300 py-4 px-16 ">
-          <div className="w-5/12 ">
+        <div className="flex md:flex-row flex-col border-t mt-11 border-gray-300 py-4 md:px-16 px-5 ">
+          <div className="md:w-5/12 ">
             <h1>Campaign Duration</h1>
-            <p className="text-sm text-gray-600">
+            <p className="md:text-sm text-xs text-gray-600">
               Set a time limit for your campaign. You won’t be able to change
               this after you launch.
               <br />
               <br />
             </p>
           </div>
-          <div className="w-7/12 px-11 ">
+          <div className="md:w-7/12 md:px-11 ">
             <div>
-              <h1>Enter Number of days (1 - 60) </h1>
+              <h1 className="md:text-auto text-sm">Enter Number of days (1 - 60) </h1>
 
               <input
                 onChange={handleOnChange}
@@ -469,10 +469,10 @@ export default function Launch() {
                 name="text"
                 id="duration"
                 placeholder="1"
-                className="w-80 block p-2 text-sm mt-1 border border-gray-100 focus:outline-none rounded-md"
+                className="md:w-80 w-full block p-2 md:text-sm text-xs mt-1 border border-gray-300 focus:outline-none rounded-md"
               />
               {!isValidDuration && (
-                <p className="text-red-700 text-sm">
+                <p className="text-red-700 md:text-sm text-xs">
                   <small>Duration should be within 1 and 60</small>
                 </p>
               )}
@@ -480,10 +480,10 @@ export default function Launch() {
           </div>
         </div>
 
-        <div className="flex border-t mt-11 border-gray-300 py-4 px-16 ">
-          <div className="w-5/12 ">
+        <div className="flex md:flex-row flex-col border-t mt-11 border-gray-300 py-4 md:px-16 px-5 ">
+          <div className="md:w-5/12 ">
             <h1>Goal (Amount to raise)</h1>
-            <p className="text-sm text-gray-600">
+            <p className="md:text-sm text-xs text-gray-600">
               Set the amount to be funded. Note that if the goal is not reached
               after the specified campaign duration, money will be refunded to
               the backers.
@@ -491,10 +491,10 @@ export default function Launch() {
               <br />
             </p>
           </div>
-          <div className="w-7/12 px-11 ">
+          <div className="md:w-7/12 md:px-11 ">
             <div>
               <h1>Enter amount to raise in dollars </h1>
-              <div className="flex border border-gray-100 items-center p-2">
+              <div className="flex border border-gray-300 rounded-md items-center p-2">
                 <p>$</p>
                 <input
                   onChange={handleOnChange}
@@ -503,12 +503,12 @@ export default function Launch() {
                   name="text"
                   id="goal"
                   // placeholder="$50,000"
-                  className="w-80 block text-sm ml-1  focus:outline-none rounded-md"
+                  className="md:w-80 w-full block md:text-sm text-xs ml-1  focus:outline-none rounded-md"
                 />
               </div>
 
               {!isValidGoal && (
-                <p className="text-red-700 text-sm">
+                <p className="text-red-700 md:text-sm text-xs">
                   <small>Invalid amount</small>
                 </p>
               )}

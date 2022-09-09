@@ -78,13 +78,13 @@ export default function Header() {
         </div>
       )}
 
-      <nav className="flex items-center justify-between px-2 py-2 sm:px-4 sm:py-4 h-full text-white bg-zinc-800 ">
-        <p className="font-logo text-xl sm:text-3xl">
+      <nav className="flex items-center flex-col ss:flex-row w-full justify-between px-2 py-2 sm:px-4 sm:py-4 h-full text-white bg-zinc-800 ">
+        <p className="font-logo text-xl sm:text-3xl self-start ss:self-auto">
           <span className="text-orange-700">{"<"}L</span>arry
           <span className="text-orange-700">C</span>odes
           <span className="text-orange-700">{"/>"}</span>
         </p>
-        <div className="flex items-center justify-end">
+        <div className="flex items-center justify-end self-end ss:self-auto">
           <div className="flex justify-between items-center text-lg ">
             {!isBreakpoint && (
               <>

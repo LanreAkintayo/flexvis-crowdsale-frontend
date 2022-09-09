@@ -110,7 +110,7 @@ export default function ProjectCardSection() {
       <h1 className="text-3xl mt-10">Explore Projects</h1>
       <div className="flex flex-col w-full items-center my-10 mb-14">
         {allProjects && (
-          <div className="grid grid-rows-4 grid-cols-1 sm:grid-rows-2 sm:grid-cols-2 lg:grid-rows-1 lg:grid-cols-4 xs:grid-rows-1 xs:grid-cols-4 gap-2 justify-start w-full">
+          <div className={`grid ${allProjects.length >= 4 ? "grid-rows-4": `grid-rows-${allProjects.length}`} grid-cols-1 sm:grid-rows-2 sm:grid-cols-2 lg:grid-rows-1 lg:grid-cols-4 xs:grid-rows-1 xs:grid-cols-4 gap-2 justify-start w-full`}>
             {allProjects?.map((projectInfo) => {
               // console.log("Project Info: ", projectInfo);
               //   getTotalAmountRaisedInDollars({

@@ -7,6 +7,7 @@ import { contractAddresses, abi, erc20Abi, wbnbAbi } from "../constants";
 import { useNotification } from "web3uikit";
 import useSWR, { useSWRConfig } from "swr";
 import { trackPromise, usePromiseTracker } from "react-promise-tracker";
+import Footer from "../components/Footer";
 // import { getAllProjects } from "../lib/projects";
 
 const supportedTokens = [
@@ -294,15 +295,15 @@ export default function PageInfo({ projectInfo }) {
         </div>
       </section>
       <section>
-        <h1 className="w-full text-center pt-3 text-3xl">
+        <h1 className="w-full text-center pt-3 text-2xl sm:text-3xl">
           {projectData.projectTitle}
         </h1>
         <p className="text-center text-gray-800">
           {projectData.projectSubtitle}
         </p>
-        <div className="flex flex-col lg:flex-row mt-11">
-          <div className="flex flex-col lg:w-7/12 px-8">
-            <div className="flex justify-between text-xl text-gray-500 my-3 py-3 border-b-2">
+        <div className="flex flex-col md:flex-row mt-11">
+          <div className="flex flex-col md:w-7/12 px-8">
+            <div className="flex justify-between text-sm lg:text-xl text-gray-500 my-3 py-3 border-b-2">
               <button>Home</button>
               <button>Backers</button>
               <button>Updates</button>
@@ -317,10 +318,10 @@ export default function PageInfo({ projectInfo }) {
             </div>
 
             <div className="py-4">
-              <h1 className="text-4xl text-gray-800 pt-10 pb-4">
+              <h1 className=" text-xl md:text-3xl text-gray-800 pt-10 pb-4">
                 Why do I need this fund?
               </h1>
-              <p>{projectData.projectNote}</p>
+              <p className="md:text-base text-sm">{projectData.projectNote}</p>
             </div>
           </div>
           <div className="mx-8 lg:w-5/12 lg:px-8">
@@ -340,7 +341,7 @@ export default function PageInfo({ projectInfo }) {
             </div>
             <div className="">
               <div className="flex flex-col mt-6">
-                <h1 className="text-3xl text-gray-800">
+                <h1 className=" text-xl md:text-3xl text-gray-800">
                   ${formattedAmountRaised}
                 </h1>
                 <p className="text-sm text-gray-500">
@@ -349,7 +350,7 @@ export default function PageInfo({ projectInfo }) {
               </div>
 
               <div className="flex flex-col mt-6">
-                <h1 className="text-2xl text-gray-800">
+                <h1 className=" text-xl md:text-2xl text-gray-800">
                   {time(projectInfo.secondsLeft * 1000)}
                 </h1>
                 <p className="text-sm text-gray-500">
@@ -383,49 +384,7 @@ export default function PageInfo({ projectInfo }) {
         </div>
       )}
 
-      <footer className="bg-zinc-800 text-gray-400 flex justify-between items-center flex-col">
-        <h1 className="text-xl pb-2 pt-1 ">
-          <u>Get in Touch</u>
-        </h1>
-        <div className="flex">
-          <div>
-            <img
-              alt="..."
-              src="/github.svg"
-              className="object-cover rounded-md "
-            />
-          </div>
-          <div>
-            <img
-              alt="..."
-              src="/linkedin.svg"
-              className="object-cover ml-4 rounded-md "
-            />
-          </div>
-          <div>
-            <img
-              alt="..."
-              src="/twitter.svg"
-              className="object-cover ml-4 rounded-md "
-            />
-          </div>
-          <div>
-            <img
-              alt="..."
-              src="/youtube.svg"
-              className="object-cover ml-4 rounded-md "
-            />
-          </div>
-          <div>
-            <img
-              alt="..."
-              src="/email.png"
-              className="object-cover w-7 h-7 ml-4 rounded-md "
-            />
-          </div>
-        </div>
-        <p className="mt-4 text-sm">© 2022 Made by LarryCodes</p>
-      </footer>
+    <Footer />
     </>
   );
 }
