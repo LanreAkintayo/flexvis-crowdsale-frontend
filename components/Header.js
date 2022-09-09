@@ -19,24 +19,22 @@ const useMediaQuery = (width) => {
 
   useEffect(() => {
     const media = window.matchMedia(`(max-width: ${width}px)`);
-    media.addListener(updateTarget);
+    media.addEventListener("change", updateTarget);
 
     // Check on mount (callback is not called until a change occurs)
     if (media.matches) {
       setTargetReached(true);
     }
 
-    return () => media.removeListener(updateTarget);
+    return () => media.removeEventListener("change", updateTarget);
   }, []);
 
   return targetReached;
 };
 
-
-
 export default function Header() {
   const [collapsed, setCollapsed] = useState(true);
-  const isBreakpoint = useMediaQuery(768)
+  const isBreakpoint = useMediaQuery(912);
 
   useEffect(() => {
     console.log(collapsed);
@@ -45,16 +43,14 @@ export default function Header() {
     setCollapsed((prevCollapsed) => !prevCollapsed);
   };
 
-
-
   return (
-    <div className="h-20">
+    <div className="h-20 w-screen ">
       {/* Navbar */}
 
-      {!collapsed && (
+      {!collapsed && isBreakpoint && (
         <div className={`z-50 h-screen ${!collapsed && "fixed inset-0"}`}>
           <ProSidebar
-            breakPoint="xs"
+            breakPoint="0px"
             open={false}
             collapsedWidth="0px"
             collapsed={collapsed}
@@ -82,30 +78,35 @@ export default function Header() {
         </div>
       )}
 
-      <nav className="flex items-center px-4 py-4 h-full text-white bg-zinc-800 ">
-        <p className="w-5/12 font-logo text-3xl">
+      <nav className="flex items-center justify-between px-2 py-2 sm:px-4 sm:py-4 h-full text-white bg-zinc-800 ">
+        <p className="font-logo text-xl sm:text-3xl">
           <span className="text-orange-700">{"<"}L</span>arry
           <span className="text-orange-700">C</span>odes
           <span className="text-orange-700">{"/>"}</span>
         </p>
-        <div className="flex w-7/12 items-center justify-end">
+        <div className="flex items-center justify-end">
           <div className="flex justify-between items-center text-lg ">
-            <Link href="/">
-              <a className="text-white font-semibold hover:text-green-500">
-                Home
-              </a>
-            </Link>
-            <Link href="/projects">
-              <a className="ml-8 text-white font-semibold hover:text-green-500">
-                Projects
-              </a>
-            </Link>
+            {!isBreakpoint && (
+              <>
+                <Link href="/">
+                  <a className="text-white font-semibold hover:text-green-500 sm:text-xl text-lg">
+                    Home
+                  </a>
+                </Link>
+                <Link href="/projects">
+                  <a className="sm:ml-8 ml-6 text-white font-semibold hover:text-green-500">
+                    Projects
+                  </a>
+                </Link>
 
-            <Link href="/launch">
-              <a className="mx-8 text-white font-semibold hover:text-green-500">
-                Get Funded
-              </a>
-            </Link>
+                <Link href="/launch">
+                  <a className="sm:mx-4 mx-2 text-white font-semibold hover:text-green-500 ">
+                    Get Funded
+                  </a>
+                </Link>
+              </>
+            )}
+
             <div className="text-white">
               {/* <Button type="button" text="Connect Wallet" /> */}
               <div className="">
@@ -113,16 +114,18 @@ export default function Header() {
                 <ConnectButton text="This is a button" />
               </div>
             </div>
-            <div
-              className="w-8 h-8 text-white hover:text-green-500 cursor-pointer"
-              onClick={handleSidebar}
-            >
-              <img
-                alt="..."
-                src="./menubar.svg"
-                className="object-cover w-full h-full cursor-pointer hover:text-green-500"
-              />
-            </div>
+            {isBreakpoint && (
+              <div
+                className="w-8 h-8 text-white hover:text-green-500 cursor-pointer"
+                onClick={handleSidebar}
+              >
+                <img
+                  alt="..."
+                  src="./menubar.svg"
+                  className="object-cover w-full h-full cursor-pointer hover:text-green-500"
+                />
+              </div>
+            )}
           </div>
         </div>
       </nav>

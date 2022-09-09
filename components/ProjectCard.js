@@ -52,7 +52,7 @@ export default function ProjectCard({ projectInfo }) {
         }}
         as={`/${projectInfo.projectTitle}`}
       >
-        <div className="mx-3 relative w-72 h-auto  mb-5 lg:mb-0 bg-white-200 shadow-lg cursor-pointer">
+        <div className="mx-3 relative w-auto h-auto mb-5 lg:mb-0 bg-white-200 shadow-lg cursor-pointer">
         <p className={`px-2 py-1 absolute left-1 top-1 rounded-md ${statusBgColor} ${statusTextColor}`}><small>{projectInfo.status}</small></p>
           <div className="w-full h-56 ">
             <img

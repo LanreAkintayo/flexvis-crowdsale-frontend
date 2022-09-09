@@ -28,24 +28,8 @@ export default function Home() {
   // };
 
   return (
-    <>
+    <div className="w-screen max-w-max">
       <section>
-        {/* {!collapsed && (
-          <div className={`z-50 h-screen ${!collapsed && "fixed inset-0"}`}>
-            <ProSidebar
-              breakPoint="xs"
-              open={false}
-              collapsedWidth="0px"
-              collapsed={collapsed}
-            >
-              <Menu iconShape="square">
-                <MenuItem><Link href="/"> Home</Link></MenuItem>
-                <MenuItem><Link href="/">Projects</Link></MenuItem>
-                <MenuItem><Link href="/launch">Get Funded</Link></MenuItem>
-              </Menu>
-            </ProSidebar>
-          </div>
-        )} */}
         <Header />
 
         <div className="relative w-full h-screen">
@@ -58,12 +42,12 @@ export default function Home() {
               />
             </div>
           </div>
-          <div className="mx-7 absolute w-full h-4/6 flex flex-col justify-center text-white">
-            <div className="text-white text-3xl font-medium lg:text-6xl w-8/12 ">
-              Best Crowdfund Platform for Personal Projects
+          <div className="mx-7 absolute h-4/6 flex flex-col justify-center text-white">
+            <div className="text-white text-3xl w-12/12 font-medium sm:text-4xl lg:text-5xl w-full lg:w-8/12 pr-2">
+              <p className="w-full">Best Crowdfund Platform for Personal Projects</p>
             </div>
             <p className="my-4 text-xl">Fund with varieties of tokens</p>
-            <div className="flex text-xl mt-6">
+            <div className="flex text-base ss:text-xl mt-6">
               <button
                 className="bg-green-800 p-2 rounded-md"
                 onClick={() => {
@@ -95,6 +79,6 @@ export default function Home() {
       </section>
       <ProjectCardSection />
       <Footer />
-    </>
+    </div>
   );
 }

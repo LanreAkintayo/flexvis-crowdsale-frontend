@@ -106,11 +106,11 @@ export default function ProjectCardSection() {
   );
 
   return (
-    <section className="pl-5 w-full">
+    <section className=" px-5 lg:px-5 w-full">
       <h1 className="text-3xl mt-10">Explore Projects</h1>
       <div className="flex flex-col w-full items-center my-10 mb-14">
         {allProjects && (
-          <div className="flex lg:flex-row flex-col justify-start w-full">
+          <div className="grid grid-rows-4 grid-cols-1 sm:grid-rows-2 sm:grid-cols-2 lg:grid-rows-1 lg:grid-cols-4 xs:grid-rows-1 xs:grid-cols-4 gap-2 justify-start w-full">
             {allProjects?.map((projectInfo) => {
               // console.log("Project Info: ", projectInfo);
               //   getTotalAmountRaisedInDollars({
