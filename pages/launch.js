@@ -259,8 +259,8 @@ export default function Launch() {
         <div className="w-full flex my-5 text-xl flex-col items-center">
           <h1>Make it easy for people to learn about your project</h1>
         </div>
-        <div className="flex border-t my-11 border-gray-300 py-4 px-16 ">
-          <div className="w-5/12 ">
+        <div className="flex flex-col md:flex-row border-t my-11 border-gray-300 py-4 px-16 ">
+          <div className="md:w-5/12 ">
             <h1>Project Title</h1>
             <p className="text-sm text-gray-600">
               Write a clear, brief title and subtitle to help people quickly
@@ -272,8 +272,8 @@ export default function Launch() {
               community.
             </p>
           </div>
-          <div className="w-7/12 px-11 ">
-            <div>
+          <div className="w-12/12 md:w-7/12 md:px-11 mt-5 md:mt-0">
+            <div className="items-start">
               <h1>Title</h1>
 
               <input
@@ -303,8 +303,8 @@ export default function Launch() {
           </div>
         </div>
 
-        <div className="flex border-t my-11 border-gray-300 py-4 px-16 ">
-          <div className="w-5/12 ">
+        <div className="flex md:flex-row flex-col border-t my-11 border-gray-300 py-4 px-16 ">
+          <div className="md:w-5/12 ">
             <h1>Description (Why do you need this fund)</h1>
             <p className="text-sm text-gray-600">
               Write a note on why you choose to launch a campaign. This is
@@ -312,7 +312,7 @@ export default function Launch() {
               backers.
             </p>
           </div>
-          <div className="w-7/12 px-11 ">
+          <div className="md:w-7/12 md:px-11 mt-4 md:mt-0">
             <div>
               <h1>Note</h1>
               <textarea
@@ -327,8 +327,8 @@ export default function Launch() {
           </div>
         </div>
 
-        <div className="flex border-t my-11 border-gray-300 py-4 px-16 ">
-          <div className="w-5/12 ">
+        <div className="flex md:flex-row flex-col border-t my-11 border-gray-300 py-4 px-16 ">
+          <div className="md:w-5/12 ">
             <h1>Project Image</h1>
             <p className="text-sm text-gray-600">
               Add an image that clearly represents your project. Choose one that
@@ -338,7 +338,7 @@ export default function Launch() {
               <br />
             </p>
           </div>
-          <div className="w-7/12 px-11 ">
+          <div className="md:w-7/12 md:px-11 ">
             <div className="">
               <div className="border border-gray-300 h-80 w-full hover:bg-gray-200">
                 <button
@@ -376,8 +376,8 @@ export default function Launch() {
           </div>
         </div>
 
-        <div className="flex border-t my-11 border-gray-300 py-4 px-16 ">
-          <div className="w-5/12 ">
+        <div className="flex md:flex-row flex-col border-t my-11 border-gray-300 py-4 px-16 ">
+          <div className="md:w-5/12 ">
             <h1>Launch Date</h1>
             <p className="text-sm text-gray-600">
               Select a date you want your project to be launched. Project will
@@ -386,10 +386,10 @@ export default function Launch() {
               <br />
             </p>
           </div>
-          <div className="w-7/12 px-11 ">
+          <div className="md:w-7/12 md:px-11 ">
             <div className="flex items-center">
               <div className="flex flex-col">
-                <div className="flex flex-col ml-4 my-2">
+                <div className="flex flex-col md:ml-4 my-2">
                   <p className="text-sm">Use Calendar</p>
                   <div>
                     <div className="flex bg-gray-50 border px-2 border-gray-300 items-center p-2">
