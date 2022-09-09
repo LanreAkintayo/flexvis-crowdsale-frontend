@@ -67,7 +67,7 @@ export default function PageInfo({ projectInfo }) {
 
   let color;
 
-  // console.log("Thees are all the projects: ", allProjects)
+  // console.log("Thees are all the backers ", projectData.backers)
 
   if (projectData.percentFunded > 70) {
     color = "bg-green-700";
@@ -84,7 +84,7 @@ export default function PageInfo({ projectInfo }) {
   } = useWeb3Contract();
 
   const fetchProjectInfo = async () => {
-    console.log("Inside fetchProject info method")
+    // console.log("Inside fetchProject info method");
     const provider = await enableWeb3();
 
     const crowdfundContract = new ethers.Contract(
@@ -102,6 +102,12 @@ export default function PageInfo({ projectInfo }) {
     const amountRaisedInDollars =
       await crowdfundContract.getTotalAmountRaisedInDollars(project.id);
     const backers = await crowdfundContract.getBackers(project.id);
+    const backersAddress = backers.map(backer => {
+      return backer[0]
+    })
+
+    const uniqueBackers = [...new Set(backersAddress)]
+    // console.log("Unique backers: ", uniqueBackers)
 
     let secondsLeft;
     let status;
@@ -137,9 +143,25 @@ export default function PageInfo({ projectInfo }) {
       secondsLeft,
       status,
       percentFunded: percentFunded >= 100 ? 100 : Math.floor(percentFunded),
-      backers,
+      backers: uniqueBackers,
     });
   };
+
+  const time = ((milliseconds)=>{
+    const SEC = 1e3;
+    const MIN = SEC * 60;
+    const HOUR = MIN * 60;
+    const DAY = HOUR * 24;
+    return time => {
+        const ms = Math.abs(time);
+        const d = ms / DAY | 0;
+        const h = ms % DAY / HOUR | 0;
+        const m = ms % HOUR / MIN | 0;
+        const s = ms % MIN / SEC | 0;
+        return `${time < 0 ? "-" : ""}${d} Days ${h} Hours`;
+        // ${m}Minute(s) ${s}Second(s)
+    };
+})();
 
   const handleSupport = () => {
     setSupportModalOpen(true);
@@ -168,6 +190,16 @@ export default function PageInfo({ projectInfo }) {
 
     await fetchProjectInfo();
   };
+
+  const getNoOfBackers = () => {
+      const backersAddress = projectData.backers.map(backer => {
+      return backer[0]
+    })
+
+    const uniqueBackers = [...new Set(backersAddress)]
+
+    return uniqueBackers.length
+    }
 
   const handleFailure = async (error) => {
     console.log("Error: ", error);
@@ -303,17 +335,27 @@ export default function PageInfo({ projectInfo }) {
                 {projectData.percentFunded}% funded
               </p>
               <p className="bg-green-100 text-green-800 rounded-md p-2 px-3 ">
-                {projectData.backers.length} backers
+                {getNoOfBackers()} {getNoOfBackers() == 1 ? "backer": "backers"}
               </p>
             </div>
+            <div className="">
+              <div className="flex flex-col mt-6">
+                <h1 className="text-3xl text-gray-800">
+                  ${formattedAmountRaised}
+                </h1>
+                <p className="text-sm text-gray-500">
+                  raised of ${formattedGoal}
+                </p>
+              </div>
 
-            <div className="flex flex-col mt-6">
-              <h1 className="text-3xl text-gray-800">
-                ${formattedAmountRaised}
-              </h1>
-              <p className="text-sm text-gray-500">
-                raised of ${formattedGoal}
-              </p>
+              <div className="flex flex-col mt-6">
+                <h1 className="text-2xl text-gray-800">
+                  {time(projectInfo.secondsLeft * 1000)}
+                </h1>
+                <p className="text-sm text-gray-500">
+                  remaining
+                </p>
+              </div>
             </div>
 
             <button

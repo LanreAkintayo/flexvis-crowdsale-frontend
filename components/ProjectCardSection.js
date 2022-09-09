@@ -10,11 +10,17 @@ export default function ProjectCardSection() {
 
   const chainId = parseInt(chainIdHex);
 
-  const length = contractAddresses[chainId]?.length
+  const length = contractAddresses[chainId]?.length;
   const crowdfundAddress =
-    chainId in contractAddresses ? contractAddresses[chainId][length-1] : null;
+    chainId in contractAddresses
+      ? contractAddresses[chainId][length - 1]
+      : null;
 
-  const { runContractFunction: getAllProjects, isFetching, isLoading } = useWeb3Contract({
+  const {
+    runContractFunction: getAllProjects,
+    isFetching,
+    isLoading,
+  } = useWeb3Contract({
     abi: abi,
     contractAddress: crowdfundAddress,
     functionName: "getAllProjects",
@@ -33,11 +39,11 @@ export default function ProjectCardSection() {
   } = useSWR(
     () => (isWeb3Enabled ? "web3/projects" : null),
     async () => {
-      console.log("We are here again")
-        const projects = await getAllProjects({
-          onSuccess: (tx) => console.log("all Project", tx),
-          onError: (error) => console.log(error),
-        });
+      // console.log("We are here again");
+      const projects = await getAllProjects({
+        onSuccess: (tx) => console.log("all Project", tx),
+        onError: (error) => console.log(error),
+      });
       const provider = await enableWeb3();
       const crowdfundContract = new ethers.Contract(
         crowdfundAddress,
@@ -49,30 +55,34 @@ export default function ProjectCardSection() {
       const allProjects = projects.map(async (project) => {
         const amountRaisedInDollars =
           await crowdfundContract.getTotalAmountRaisedInDollars(project.id);
-        const backers =  await crowdfundContract.getBackers(project.id) 
+        const backers = await crowdfundContract.getBackers(project.id);
 
-        console.log("Backers: ", backers)
+        // console.log("Backers: ", backers);
 
-        
         let secondsLeft;
         let status;
-    
 
-        if (Math.floor(Number(new Date().getTime() / 1000)) > Number(project.endDay)) {
+        if (
+          Math.floor(Number(new Date().getTime() / 1000)) >
+          Number(project.endDay)
+        ) {
           status = "Closed";
           secondsLeft = 0;
         } else if (
-          Number(Math.floor(Number(new Date().getTime() / 1000))) >= Number(project.startDay)
+          Number(Math.floor(Number(new Date().getTime() / 1000))) >=
+          Number(project.startDay)
         ) {
           status = "Active";
           secondsLeft =
-            Number(project.endDay) - Number(Math.floor(Number(new Date().getTime() / 1000)));
+            Number(project.endDay) -
+            Number(Math.floor(Number(new Date().getTime() / 1000)));
         } else {
           status = "Pending";
           secondsLeft = 0;
         }
 
-        const percentFunded = (Number(amountRaisedInDollars) / Number(project.goal)) * 100;      
+        const percentFunded =
+          (Number(amountRaisedInDollars) / Number(project.goal)) * 100;
 
         return {
           ...project,
@@ -83,18 +93,17 @@ export default function ProjectCardSection() {
           startDay: project.startDay.toString(),
           secondsLeft,
           status,
-          percentFunded : percentFunded >=100 ? 100 : Math.floor(percentFunded),
-          backers
+          percentFunded: percentFunded >= 100 ? 100 : Math.floor(percentFunded),
+          backers,
         };
       });
 
       const resolved = await Promise.all(allProjects);
 
-      console.log("resolved: ", resolved);
+      // console.log("resolved: ", resolved);
       return resolved;
     }
   );
-
 
   return (
     <section className="pl-5 w-full">
@@ -118,9 +127,11 @@ export default function ProjectCardSection() {
           </div>
         )}
 
-        <button className="text-green-800 p-2 text-xl mt-5 border rounded-md border-green-800">
-          See more
-        </button>
+        {allProjects?.length > 4 && (
+          <button className="text-green-800 p-2 text-xl mt-5 border rounded-md border-green-800">
+            See more
+          </button>
+        )}
       </div>
     </section>
   );

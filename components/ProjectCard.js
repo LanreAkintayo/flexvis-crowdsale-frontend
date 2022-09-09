@@ -13,6 +13,8 @@ export default function ProjectCard({ projectInfo }) {
   const goal = ethers.utils.formatEther(projectInfo.goal.toString());
 
   let color;
+  let statusBgColor;
+  let statusTextColor;
 
   if (projectInfo.percentFunded > 70) {
     color = "bg-green-700";
@@ -20,6 +22,17 @@ export default function ProjectCard({ projectInfo }) {
     color = "bg-yellow-600";
   } else {
     color = "bg-red-600";
+  }
+
+  if (projectInfo.status == "Active"){
+    statusBgColor = "bg-green-200"
+    statusTextColor = "text-green-700"
+  } else if (projectInfo.status == "Pending"){
+    statusBgColor = "bg-yellow-200"
+    statusTextColor="text-yellow-700"
+  } else if (projectInfo.status == "Closed"){
+    statusBgColor = "bg-red-200"
+    statusTextColor = "text-red-700"
   }
 
   let dollarUSLocale = Intl.NumberFormat("en-US");
@@ -39,7 +52,8 @@ export default function ProjectCard({ projectInfo }) {
         }}
         as={`/${projectInfo.projectTitle}`}
       >
-        <div className="mx-3 w-72 h-auto  mb-5 lg:mb-0 bg-white-200 shadow-lg cursor-pointer">
+        <div className="mx-3 relative w-72 h-auto  mb-5 lg:mb-0 bg-white-200 shadow-lg cursor-pointer">
+        <p className={`px-2 py-1 absolute left-1 top-1 rounded-md ${statusBgColor} ${statusTextColor}`}><small>{projectInfo.status}</small></p>
           <div className="w-full h-56 ">
             <img
               alt="..."
