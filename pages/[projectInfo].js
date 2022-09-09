@@ -5,8 +5,8 @@ import { useState } from "react";
 import { useMoralis, useWeb3Contract } from "react-moralis";
 import { contractAddresses, abi, erc20Abi, wbnbAbi } from "../constants";
 import { useNotification } from "web3uikit";
-import useSWR, { useSWRConfig } from 'swr'
-import {trackPromise, usePromiseTracker } from "react-promise-tracker"
+import useSWR, { useSWRConfig } from "swr";
+import { trackPromise, usePromiseTracker } from "react-promise-tracker";
 // import { getAllProjects } from "../lib/projects";
 
 const supportedTokens = [
@@ -24,14 +24,23 @@ const tokenToAddress = {
 };
 
 export default function PageInfo({ projectInfo }) {
-  const { Moralis, isWeb3Enabled, chainId: chainIdHex, enableWeb3, account } = useMoralis();
+  const {
+    Moralis,
+    isWeb3Enabled,
+    chainId: chainIdHex,
+    enableWeb3,
+    account,
+  } = useMoralis();
   const [supportModalOpen, setSupportModalOpen] = useState(false);
   const [selectedToken, setSelectedToken] = useState({});
   const [pledgeAmount, setPledgeAmount] = useState();
   const [isValidAmount, setIsValidAmount] = useState(true);
   const dispatch = useNotification();
-  const {mutate} = useSWRConfig()
+  const { mutate } = useSWRConfig();
 
+  const [projectData, setProjectData] = useState({
+    ...projectInfo,
+  });
 
   // console.log("Seconds Left: ", projectInfo.secondsLeft)
   // // 1662521824
@@ -41,14 +50,16 @@ export default function PageInfo({ projectInfo }) {
 
   const chainId = parseInt(chainIdHex);
 
-  const length = contractAddresses[chainId]?.length
+  const length = contractAddresses[chainId]?.length;
   const crowdfundAddress =
-    chainId in contractAddresses ? contractAddresses[chainId][length-1] : null;
+    chainId in contractAddresses
+      ? contractAddresses[chainId][length - 1]
+      : null;
 
   const dollarUSLocale = Intl.NumberFormat("en-US");
 
   const formattedAmountRaised = dollarUSLocale
-    .format(ethers.utils.formatEther(projectInfo.amountRaisedInDollars))
+    .format(ethers.utils.formatEther(projectData.amountRaisedInDollars))
     .toString();
   const formattedGoal = dollarUSLocale
     .format(ethers.utils.formatEther(projectInfo.goal))
@@ -56,11 +67,11 @@ export default function PageInfo({ projectInfo }) {
 
   let color;
 
-  console.log("Thees are all the projects: ", allProjects)
+  // console.log("Thees are all the projects: ", allProjects)
 
-  if (projectInfo.percentFunded > 70) {
+  if (projectData.percentFunded > 70) {
     color = "bg-green-700";
-  } else if (projectInfo.percentFunded > 50) {
+  } else if (projectData.percentFunded > 50) {
     color = "bg-yellow-600";
   } else {
     color = "bg-red-600";
@@ -71,6 +82,64 @@ export default function PageInfo({ projectInfo }) {
     isFetching,
     isLoading,
   } = useWeb3Contract();
+
+  const fetchProjectInfo = async () => {
+    console.log("Inside fetchProject info method")
+    const provider = await enableWeb3();
+
+    const crowdfundContract = new ethers.Contract(
+      crowdfundAddress,
+      abi,
+      provider
+    );
+
+    const projects = await crowdfundContract.getAllProjects();
+
+    const project = projects.filter(
+      (project) => project.id == projectInfo.id
+    )[0];
+
+    const amountRaisedInDollars =
+      await crowdfundContract.getTotalAmountRaisedInDollars(project.id);
+    const backers = await crowdfundContract.getBackers(project.id);
+
+    let secondsLeft;
+    let status;
+
+    if (
+      Math.floor(Number(new Date().getTime() / 1000)) > Number(project.endDay)
+    ) {
+      status = "Closed";
+      secondsLeft = 0;
+    } else if (
+      Number(Math.floor(Number(new Date().getTime() / 1000))) >=
+      Number(project.startDay)
+    ) {
+      status = "Active";
+      secondsLeft =
+        Number(project.endDay) -
+        Number(Math.floor(Number(new Date().getTime() / 1000)));
+    } else {
+      status = "Pending";
+      secondsLeft = 0;
+    }
+
+    const percentFunded =
+      (Number(amountRaisedInDollars) / Number(project.goal)) * 100;
+
+    setProjectData({
+      ...project,
+      amountRaisedInDollars: amountRaisedInDollars.toString(),
+      endDay: project.endDay.toString(),
+      goal: project.goal.toString(),
+      id: project.id.toString(),
+      startDay: project.startDay.toString(),
+      secondsLeft,
+      status,
+      percentFunded: percentFunded >= 100 ? 100 : Math.floor(percentFunded),
+      backers,
+    });
+  };
 
   const handleSupport = () => {
     setSupportModalOpen(true);
@@ -89,7 +158,7 @@ export default function PageInfo({ projectInfo }) {
   const handleSuccess = async (tx) => {
     console.log("Success transaction: ", tx);
     await trackPromise(tx.wait(1));
-    setSupportModalOpen(false)
+    setSupportModalOpen(false);
     dispatch({
       type: "success",
       message: "Pledging Completed!",
@@ -97,7 +166,7 @@ export default function PageInfo({ projectInfo }) {
       position: "topR",
     });
 
-    await mutate("web3/projects")
+    await fetchProjectInfo();
   };
 
   const handleFailure = async (error) => {
@@ -110,10 +179,9 @@ export default function PageInfo({ projectInfo }) {
     });
   };
 
-
   const handlePledge = async () => {
     const provider = await enableWeb3();
-    
+
     // const projects = await crowdfundContract.getAllProjects();
 
     const formattedPledgeAmount = ethers.utils.parseEther(
@@ -123,58 +191,54 @@ export default function PageInfo({ projectInfo }) {
     console.log(formattedPledgeAmount.toString());
     console.log(tokenAddress);
 
-    const signer = provider.getSigner(account)
+    const signer = provider.getSigner(account);
 
     const crowdfundContract = new ethers.Contract(
       crowdfundAddress,
       abi,
       provider
     );
-    const tokensSupported = await crowdfundContract.getSupportedTokensAddress()
-    console.log("Tokens Supported: ", tokensSupported)
- 
-    if (tokenAddress == tokenToAddress["BNB"]){
-      const wbnb = new ethers.Contract(
-        tokenAddress,
-        wbnbAbi,
-        provider
+    const tokensSupported = await crowdfundContract.getSupportedTokensAddress();
+    console.log("Tokens Supported: ", tokensSupported);
+
+    if (tokenAddress == tokenToAddress["BNB"]) {
+      const wbnb = new ethers.Contract(tokenAddress, wbnbAbi, provider);
+
+      const depositTx = await trackPromise(
+        wbnb.connect(signer).deposit({ value: formattedPledgeAmount })
       );
+      await trackPromise(depositTx.wait(1));
 
-
-      const depositTx = await trackPromise(wbnb.connect(signer).deposit({value: formattedPledgeAmount}))
-      await trackPromise(depositTx.wait(1))
-
-      const approveTx = await trackPromise(wbnb.connect(signer).approve(crowdfundAddress, formattedPledgeAmount))
-      await trackPromise(approveTx.wait(1))
-
-      console.log("Balance of Account: ", await wbnb.balanceOf(account))
-
-    }else{
-      const erc20 = new ethers.Contract(
-        tokenAddress,
-        erc20Abi,
-        provider
+      const approveTx = await trackPromise(
+        wbnb.connect(signer).approve(crowdfundAddress, formattedPledgeAmount)
       );
-      console.log("Balance of token Account: ", await erc20.balanceOf(account))
+      await trackPromise(approveTx.wait(1));
 
-      const approveTx = await trackPromise(erc20.connect(signer).approve(crowdfundAddress, formattedPledgeAmount))  
-      await trackPromise(approveTx.wait(1))
+      console.log("Balance of Account: ", await wbnb.balanceOf(account));
+    } else {
+      const erc20 = new ethers.Contract(tokenAddress, erc20Abi, provider);
+      console.log("Balance of token Account: ", await erc20.balanceOf(account));
+
+      const approveTx = await trackPromise(
+        erc20.connect(signer).approve(crowdfundAddress, formattedPledgeAmount)
+      );
+      await trackPromise(approveTx.wait(1));
     }
 
-    console.log("About to pledge")
+    console.log("About to pledge");
     pledge({
       params: {
         abi: abi,
         contractAddress: crowdfundAddress, // specify the networkId
         functionName: "pledge",
         params: {
-          _id: projectInfo.id,
+          _id: projectData.id,
           tokenAddress: tokenAddress,
-          amount: formattedPledgeAmount
+          amount: formattedPledgeAmount,
         },
       },
       onSuccess: handleSuccess,
-      onError: handleFailure
+      onError: handleFailure,
     });
   };
 
@@ -199,10 +263,10 @@ export default function PageInfo({ projectInfo }) {
       </section>
       <section>
         <h1 className="w-full text-center pt-3 text-3xl">
-          {projectInfo.projectTitle}
+          {projectData.projectTitle}
         </h1>
         <p className="text-center text-gray-800">
-          {projectInfo.projectSubtitle}
+          {projectData.projectSubtitle}
         </p>
         <div className="flex flex-col lg:flex-row mt-11">
           <div className="flex flex-col lg:w-7/12 px-8">
@@ -215,7 +279,7 @@ export default function PageInfo({ projectInfo }) {
             <div className="w-full h-96">
               <img
                 alt="..."
-                src={projectInfo.projectImageUrl}
+                src={projectData.projectImageUrl}
                 className="object-cover w-full h-full"
               />
             </div>
@@ -224,22 +288,22 @@ export default function PageInfo({ projectInfo }) {
               <h1 className="text-4xl text-gray-800 pt-10 pb-4">
                 Why do I need this fund?
               </h1>
-              <p>{projectInfo.projectNote}</p>
+              <p>{projectData.projectNote}</p>
             </div>
           </div>
           <div className="mx-8 lg:w-5/12 lg:px-8">
             <div className="bg-neutral-300 h-4 dark:bg-gray-700">
               <div
                 className={`${color} h-4 `}
-                style={{ width: `${projectInfo.percentFunded}%` }}
+                style={{ width: `${projectData.percentFunded}%` }}
               ></div>
             </div>
             <div className="flex justify-between mt-1 text-sm">
               <p className="bg-yellow-100 text-yellow-800 rounded-md p-2 px-3 ">
-                {projectInfo.percentFunded}% funded
+                {projectData.percentFunded}% funded
               </p>
               <p className="bg-green-100 text-green-800 rounded-md p-2 px-3 ">
-                {projectInfo.backers.length} backers
+                {projectData.backers.length} backers
               </p>
             </div>
 
@@ -347,8 +411,6 @@ export async function getServerSideProps(context) {
     },
   };
 }
-
-
 
 // export async function getStaticPaths() {
 //   const paths = await getAllProjects();
