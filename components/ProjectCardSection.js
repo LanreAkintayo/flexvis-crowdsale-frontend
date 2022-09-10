@@ -4,6 +4,7 @@ import ProjectCard from "../components/ProjectCard";
 import useSWR, { useSWRConfig } from "swr";
 import { contractAddresses, abi, DEPLOYER } from "../constants";
 import { ethers } from "ethers";
+import { useRouter } from "next/router";
 import {
   RotateLoader,
   ClipLoader,
@@ -14,6 +15,9 @@ import {
 export default function ProjectCardSection() {
   const { isWeb3Enabled, chainId: chainIdHex, enableWeb3 } = useMoralis();
   const { switchNetwork, chain, account } = useChain();
+  const router = useRouter();
+
+  // console.log("This is the path name: ", router.pathname);
 
   const chainId = parseInt(chainIdHex);
 
@@ -114,7 +118,6 @@ export default function ProjectCardSection() {
 
   return (
     <section className=" px-5 lg:px-5 w-full">
-      <h1 className="text-3xl mt-10">Explore Projects</h1>
       <div className="flex flex-col w-full items-center my-10 mb-14">
         {isWeb3Enabled && chainId != "97" && (
           <button className="w-8/12 p-2 test-lg bg-red-100 hover:bg-red-200 text-red-700 hover:text-red-900">
@@ -164,8 +167,17 @@ export default function ProjectCardSection() {
           </div>
         )}
 
-        {allProjects?.length > 4 && (
-          <button className="text-green-800 p-2 text-xl mt-5 border rounded-md border-green-800">
+        {allProjects?.length >= 4 && router.pathname == "/" && (
+          <button
+            className="text-green-800 p-2 text-xl mt-5 border rounded-md border-green-800"
+            onClick={() => {
+              if (isWeb3Enabled) {
+                window.open("/projects", "_self");
+              } else {
+                window.alert("Connect your wallet");
+              }
+            }}
+          >
             See more
           </button>
         )}

@@ -74,7 +74,7 @@ export default function Header() {
                 </MenuItem>
               </div>
               <MenuItem>
-                <Link href="/">Projects</Link>
+                <Link href="/projects">Projects</Link>
               </MenuItem>
               <MenuItem>
                 <Link href="/launch">Get Funded</Link>

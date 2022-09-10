@@ -44,7 +44,9 @@ export default function Home() {
           </div>
           <div className="mx-7 absolute h-4/6 flex flex-col justify-center text-white">
             <div className="text-white text-3xl w-12/12 font-medium sm:text-4xl lg:text-5xl w-full lg:w-8/12 pr-2">
-              <p className="w-full">Best Crowdfund Platform for Personal Projects</p>
+              <p className="w-full">
+                Best Crowdfund Platform for Personal Projects
+              </p>
             </div>
             <p className="my-4 text-xl">Fund with varieties of tokens</p>
             <div className="flex text-base ss:text-xl mt-6">
@@ -77,7 +79,10 @@ export default function Home() {
           </div>
         </div>
       </section>
-      <ProjectCardSection />
+      <section>
+        <h1 className="text-3xl mt-10 px-5">Explore Projects</h1>
+        <ProjectCardSection />
+      </section>
       <Footer />
     </div>
   );
