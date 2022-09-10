@@ -17,32 +17,42 @@ export default function Footer() {
           </a>
         </div>
         <div>
-          <img
-            alt="..."
-            src="/linkedin.svg"
+          <a
+            target="_blank"
+            href="https://www.linkedin.com/in/lanre-akintayo-b6462b238"
             className="object-cover ml-3 rounded-md "
-          />
+          >
+            <Image src="/linkedin.svg" alt="github" width={28} height={28} />
+          </a>
         </div>
         <div>
-          <img
-            alt="..."
-            src="/twitter.svg"
+          <a
+            target="_blank"
+            href={
+              "https://twitter.com/larry_codes?t=SSIJM9u680cbsqFnXB_c1Q&s=08"
+            }
             className="object-cover ml-3 rounded-md "
-          />
+          >
+            <Image src="/twitter.svg" alt="twitter" width={28} height={28} />
+          </a>
         </div>
         <div>
-          <img
-            alt="..."
-            src="/youtube.svg"
+          <a
+            target="_blank"
+            href="https://www.youtube.com/channel/UC3QRrkhldo19vFvcilncvrw"
             className="object-cover ml-3 rounded-md "
-          />
+          >
+            <Image src="/youtube.svg" alt="youtube" width={28} height={28} />
+          </a>
         </div>
         <div>
-          <img
-            alt="..."
-            src="/email.png"
-            className="object-cover w-8 h-8 ml-3 rounded-md "
-          />
+          <a
+            target="_blank"
+            href={"mailto:akintayolanre2019@gmail.com"}
+            className="object-cover ml-3 rounded-md "
+          >
+            <Image src="/email.png" alt="email" width={28} height={28} />
+          </a>
         </div>
       </div>
       <p className="mt-4 text-sm">© 2022 Made by LarryCodes</p>
