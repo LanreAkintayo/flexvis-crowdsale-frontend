@@ -11,30 +11,20 @@ import ProjectCardSection from "../components/ProjectCardSection";
 import { ProSidebar, Menu, MenuItem, SubMenu } from "react-pro-sidebar";
 import "react-pro-sidebar/dist/css/styles.css";
 import Link from "next/link";
+import Table from "../components/Table";
 
 export default function Home() {
-  const { isWeb3Enabled, chainId } = useMoralis();
-
-  const [enabled, setEnabled] = useState(false);
-
-  const { mutate } = useSWRConfig();
-  // const [collapsed, setCollapsed] = useState(true);
-
-  // useEffect(() => {
-  //   console.log(collapsed);
-  // }, [collapsed]);
-  // const handleSidebar = () => {
-  //   setCollapsed((prevCollapsed) => !prevCollapsed);
-  // };
 
   return (
     <div className="w-screen max-w-max">
-      <section>
-        <Header />
-
-        
+      <Header />
+      <section className="px-11">
+        <h1 className="text-3xl my-4 text-center">Flexvis Investment</h1>
+        <button className="bg-gray-300 p-2 my-5 rounded-md text-gray-700">Create a Flex Investment </button>
+        <div>
+          <Table />
+        </div>
       </section>
-  
     </div>
   );
 }

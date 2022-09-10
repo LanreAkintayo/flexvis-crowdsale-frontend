@@ -85,33 +85,12 @@ export default function Header() {
       )}
 
       <nav className="flex items-center flex-col ss:flex-row w-full justify-between px-2 py-2 sm:px-4 sm:py-4 h-full text-white bg-zinc-800 ">
-        <p className="font-logo text-xl sm:text-3xl self-start ss:self-auto">
-          <span className="text-orange-700">{"<"}L</span>arry
-          <span className="text-orange-700">C</span>odes
-          <span className="text-orange-700">{"/>"}</span>
+        <p className="text-2xl sm:text-3xl self-start ss:self-auto">
+          <span className="text-orange-700">F</span>levis
         </p>
         <div className="flex items-center justify-end self-end ss:self-auto">
           <div className="flex justify-between items-center text-lg ">
-            {!isBreakpoint && (
-              <>
-                <Link href="/">
-                  <a className="text-white font-semibold hover:text-green-500 sm:text-xl text-lg">
-                    Home
-                  </a>
-                </Link>
-                <Link href="/projects">
-                  <a className="sm:ml-8 ml-6 text-white font-semibold hover:text-green-500">
-                    Projects
-                  </a>
-                </Link>
-
-                <Link href="/launch">
-                  <a className="sm:mx-4 mx-2 w-full text-white font-semibold hover:text-green-500 ">
-                    Get Funded
-                  </a>
-                </Link>
-              </>
-            )}
+         
 
             <div className="text-white flex flex-col w-full sc:py-10 items-start">
               {/* <Button type="button" text="Connect Wallet" /> */}
