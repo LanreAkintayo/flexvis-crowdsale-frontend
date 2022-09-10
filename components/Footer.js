@@ -10,6 +10,7 @@ export default function Footer() {
         <div>
           <a
             target="_blank"
+            rel="noreferrer"
             href="https://github.com/LanreAkintayo"
             className="object-cover rounded-md "
           >
@@ -19,6 +20,7 @@ export default function Footer() {
         <div>
           <a
             target="_blank"
+            rel="noreferrer"
             href="https://www.linkedin.com/in/lanre-akintayo-b6462b238"
             className="object-cover ml-3 rounded-md "
           >
@@ -28,6 +30,7 @@ export default function Footer() {
         <div>
           <a
             target="_blank"
+            rel="noreferrer"
             href={
               "https://twitter.com/larry_codes?t=SSIJM9u680cbsqFnXB_c1Q&s=08"
             }
@@ -39,6 +42,7 @@ export default function Footer() {
         <div>
           <a
             target="_blank"
+            rel="noreferrer"
             href="https://www.youtube.com/channel/UC3QRrkhldo19vFvcilncvrw"
             className="object-cover ml-3 rounded-md "
           >
@@ -48,6 +52,7 @@ export default function Footer() {
         <div>
           <a
             target="_blank"
+            rel="noreferrer"
             href={"mailto:akintayolanre2019@gmail.com"}
             className="object-cover ml-3 rounded-md "
           >
