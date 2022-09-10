@@ -166,7 +166,7 @@ export default function ProjectCardSection() {
           </div>
         )}
 
-        {allProjects?.length >= 4 && router.pathname == "/" && (
+        {allProjects?.length >= 4 && router.pathname == "/" && chainId == "97" && (
           <button
             className="text-green-800 p-2 text-xl mt-5 border rounded-md border-green-800"
             onClick={() => {
