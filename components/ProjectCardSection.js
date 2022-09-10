@@ -112,7 +112,7 @@ export default function ProjectCardSection() {
       const resolved = await Promise.all(allProjects);
 
       // console.log("resolved: ", resolved);
-      return resolved;
+      return resolved.reverse();
     }
   );
 
@@ -120,20 +120,25 @@ export default function ProjectCardSection() {
     <section className=" px-5 lg:px-5 w-full">
       <div className="flex flex-col w-full items-center my-10 mb-14">
         {isWeb3Enabled && chainId != "97" && (
-          <button className="w-8/12 p-2 test-lg bg-red-100 hover:bg-red-200 text-red-700 hover:text-red-900">
-            Switch to Smartchain Testnet
+          <button
+            className="w-8/12 p-2 test-lg bg-red-100 hover:bg-red-200 text-red-700 rounded-md hover:text-red-900"
+            onClick={() => {
+              switchNetwork("0x61");
+            }}
+          >
+            Switch to Binance Smart Chain Testnet
           </button>
         )}
-        {/* {(isFetching || isLoading) && (
-          <div className="flex flex-col w-full items-center">
+        {(isLoading || isFetching) && (
+          <div className="flex flex-col w-full my-4 items-center">
             <div className="my-1">
               <ScaleLoader color="black" loading="true" size={20} />
             </div>
 
             <p className="text-gray-500">Please Wait a few seconds</p>
           </div>
-        )} */}
-        {allProjects && chainId == "97" ? (
+        )}
+        {allProjects && chainId == "97" && (
           <div
             className={`grid ${
               allProjects.length >= 4
@@ -141,29 +146,23 @@ export default function ProjectCardSection() {
                 : `grid-rows-${allProjects.length}`
             } grid-cols-1 sm:grid-rows-2 sm:grid-cols-2 lg:grid-rows-1 lg:grid-cols-4 xs:grid-rows-1 xs:grid-cols-4 gap-2 justify-start w-full`}
           >
-            {allProjects?.map((projectInfo) => {
-              // console.log("Project Info: ", projectInfo);
-              //   getTotalAmountRaisedInDollars({
-              //     params: {
-              //       abi: abi,
-              //       contractAddress: crowdfundAddress,
-              //       functionName: "getTotalAmountRaisedInDollars",
-              //       params: { _id: projectInfo.id },
-              //     },
-              //   });
-
-              return (
-                <ProjectCard key={projectInfo.id} projectInfo={projectInfo} />
-              );
-            })}
-          </div>
-        ) : (
-          <div className="flex flex-col w-full items-center">
-            <div className="my-1">
-              <ScaleLoader color="black" loading="true" size={20} />
-            </div>
-
-            <p className="text-gray-500">Please Wait a few seconds</p>
+            {router.pathname == "/"
+              ? allProjects?.slice(0, 4).map((projectInfo) => {
+                  return (
+                    <ProjectCard
+                      key={projectInfo.id}
+                      projectInfo={projectInfo}
+                    />
+                  );
+                })
+              : allProjects?.map((projectInfo) => {
+                  return (
+                    <ProjectCard
+                      key={projectInfo.id}
+                      projectInfo={projectInfo}
+                    />
+                  );
+                })}
           </div>
         )}
 

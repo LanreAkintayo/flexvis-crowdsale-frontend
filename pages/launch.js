@@ -96,7 +96,7 @@ export default function Launch() {
     let amount;
 
     if (event.target.id == "imageSrc") {
-      imagePath = event.target.files[0];
+      imagePath = event.target.files[0] || "";
       setImageFile(imagePath);
       console.log("imagePath: ", imagePath);
 
@@ -175,37 +175,37 @@ export default function Launch() {
 
     console.log(startDayInSeconds);
 
-    const uploadedImage = await trackPromise(client.add(imageFile));
-    const url = `https://cloudflare-ipfs.com/ipfs/${uploadedImage.path}`;
+    try {
+      const uploadedImage = await trackPromise(client.add(imageFile));
+      const url = `https://cloudflare-ipfs.com/ipfs/${uploadedImage.path}`;
 
-    // setProjectInfo((prevProjectInfo) => {
-    //   return {
-    //     ...prevProjectInfo,
-    //     imageSrc: url,
-    //   };
-    // });
-
-    launch({
-      params: {
-        abi: abi,
-        contractAddress: crowdfundAddress, // specify the networkId
-        functionName: "launch",
+      launch({
         params: {
-          startDay: startDayInSeconds,
-          duration: projectInfo.duration,
-          goal: ethers.utils.parseEther(goalInDollars),
-          projectTitle: projectInfo.title,
-          projectSubtitle: projectInfo.subtitle,
-          projectNote: projectInfo.note,
-          projectImageUrl: url,
-          // projectImageUrl: currentUrl,
+          abi: abi,
+          contractAddress: crowdfundAddress, // specify the networkId
+          functionName: "launch",
+          params: {
+            // startDay: startDayInSeconds,
+            startDay: 1662728516,
+            duration: projectInfo.duration,
+            // duration: "1662813871",
+            goal: ethers.utils.parseEther(goalInDollars),
+            projectTitle: projectInfo.title,
+            projectSubtitle: projectInfo.subtitle,
+            projectNote: projectInfo.note,
+            projectImageUrl: url,
+            // projectImageUrl: currentUrl,
+          },
         },
-      },
-      onSuccess: handleSuccess,
-      onError: (error) => {
-        handleFailure(error);
-      },
-    });
+        onSuccess: handleSuccess,
+        onError: (error) => {
+          handleFailure(error);
+        },
+      });
+    } catch (error) {
+      console.log(error);
+      window.alert("Make sure you have an internet connection");
+    }
 
     // const { runContractFunction: getAllProjects } = useWeb3Contract({
     //   abi: abi,
@@ -257,7 +257,9 @@ export default function Launch() {
       <Header />
       <section>
         <div className="w-full flex my-5 text-base px-3  md:text-xl flex-col items-center">
-          <h1 className="text-center">Make it easy for people to learn about your project</h1>
+          <h1 className="text-center">
+            Make it easy for people to learn about your project
+          </h1>
         </div>
         <div className="flex flex-col md:flex-row border-t my-11 border-gray-300 py-4 md:px-16 px-5 ">
           <div className="md:w-5/12 ">
@@ -461,7 +463,9 @@ export default function Launch() {
           </div>
           <div className="md:w-7/12 md:px-11 ">
             <div>
-              <h1 className="md:text-auto text-sm">Enter Number of days (1 - 60) </h1>
+              <h1 className="md:text-auto text-sm">
+                Enter Number of days (1 - 60){" "}
+              </h1>
 
               <input
                 onChange={handleOnChange}

@@ -6,6 +6,7 @@ import { useMoralis, useWeb3Contract } from "react-moralis";
 import { contractAddresses, abi, erc20Abi, wbnbAbi } from "../constants";
 import { useNotification } from "web3uikit";
 import useSWR, { useSWRConfig } from "swr";
+import { RotateLoader, ClipLoader } from "react-spinners";
 import { trackPromise, usePromiseTracker } from "react-promise-tracker";
 import Footer from "../components/Footer";
 // import { getAllProjects } from "../lib/projects";
@@ -37,13 +38,14 @@ export default function PageInfo({ projectInfo }) {
   const [pledgeAmount, setPledgeAmount] = useState();
   const [isValidAmount, setIsValidAmount] = useState(true);
   const dispatch = useNotification();
+  const { promiseInProgress } = usePromiseTracker();
   const { mutate } = useSWRConfig();
 
   const [projectData, setProjectData] = useState({
     ...projectInfo,
   });
 
-  console.log("Seconds Left: ", projectInfo.secondsLeft)
+  console.log("Seconds Left: ", projectInfo.secondsLeft);
   // // 1662521824
   // console.log("Current Time: ", Math.floor(Number(new Date().getTime() / 1000)))
   // console.log("End day: ", projectInfo.endDay)
@@ -80,8 +82,19 @@ export default function PageInfo({ projectInfo }) {
 
   const {
     runContractFunction: pledge,
-    isFetching,
-    isLoading,
+    isFetching: isFetchingSupport,
+    isLoading: isLoadingSupport,
+  } = useWeb3Contract();
+
+  const {
+    runContractFunction: claim,
+    isFetching: isFetchingClaim,
+    isLoading: isLoadingClaim,
+  } = useWeb3Contract();
+  const {
+    runContractFunction: refund,
+    isFetching: isFetchingRefund,
+    isLoading: isLoadingRefund,
   } = useWeb3Contract();
 
   const fetchProjectInfo = async () => {
@@ -103,11 +116,11 @@ export default function PageInfo({ projectInfo }) {
     const amountRaisedInDollars =
       await crowdfundContract.getTotalAmountRaisedInDollars(project.id);
     const backers = await crowdfundContract.getBackers(project.id);
-    const backersAddress = backers.map(backer => {
-      return backer[0]
-    })
+    const backersAddress = backers.map((backer) => {
+      return backer[0];
+    });
 
-    const uniqueBackers = [...new Set(backersAddress)]
+    const uniqueBackers = [...new Set(backersAddress)];
     // console.log("Unique backers: ", uniqueBackers)
 
     let secondsLeft;
@@ -148,21 +161,23 @@ export default function PageInfo({ projectInfo }) {
     });
   };
 
-  const time = ((milliseconds)=>{
+  const time = ((milliseconds) => {
     const SEC = 1e3;
     const MIN = SEC * 60;
     const HOUR = MIN * 60;
     const DAY = HOUR * 24;
-    return time => {
-        const ms = Math.abs(time);
-        const d = ms / DAY | 0;
-        const h = ms % DAY / HOUR | 0;
-        const m = ms % HOUR / MIN | 0;
-        const s = ms % MIN / SEC | 0;
-        return `${time < 0 ? "-" : ""}${d} Days ${h} Hours ${h == 0 && `${m} Minutes`}`;
-        // ${m}Minute(s) ${s}Second(s)
+    return (time) => {
+      const ms = Math.abs(time);
+      const d = (ms / DAY) | 0;
+      const h = ((ms % DAY) / HOUR) | 0;
+      const m = ((ms % HOUR) / MIN) | 0;
+      const s = ((ms % MIN) / SEC) | 0;
+      return `${time < 0 ? "-" : ""}${d} Days ${h} Hours ${
+        h == 0 ? `${m} Minutes` : ""
+      }`;
+      // ${m}Minute(s) ${s}Second(s)
     };
-})();
+  })();
 
   const handleSupport = () => {
     setSupportModalOpen(true);
@@ -193,14 +208,14 @@ export default function PageInfo({ projectInfo }) {
   };
 
   const getNoOfBackers = () => {
-      const backersAddress = projectData.backers.map(backer => {
-      return backer[0]
-    })
+    const backersAddress = projectData.backers.map((backer) => {
+      return backer[0];
+    });
 
-    const uniqueBackers = [...new Set(backersAddress)]
+    const uniqueBackers = [...new Set(backersAddress)];
 
-    return uniqueBackers.length
-    }
+    return uniqueBackers.length;
+  };
 
   const handleFailure = async (error) => {
     console.log("Error: ", error);
@@ -275,6 +290,36 @@ export default function PageInfo({ projectInfo }) {
     });
   };
 
+  const handleClaim = () => {
+    claim({
+      params: {
+        abi: abi,
+        contractAddress: crowdfundAddress, // specify the networkId
+        functionName: "claim",
+        params: {
+          _id: projectData.id,
+        },
+      },
+      onSuccess: handleSuccess,
+      onError: handleFailure,
+    });
+  };
+
+  const handleRefund = () => {
+    claim({
+      params: {
+        abi: abi,
+        contractAddress: crowdfundAddress, // specify the networkId
+        functionName: "refund",
+        params: {
+          _id: projectData.id,
+        },
+      },
+      onSuccess: handleSuccess,
+      onError: handleFailure,
+    });
+  };
+
   const handleOnChange = (event) => {
     const pledgeAmount = event.target.value;
     setIsValidAmount(() => {
@@ -285,6 +330,8 @@ export default function PageInfo({ projectInfo }) {
     });
     setPledgeAmount(pledgeAmount);
   };
+
+  console.log("This is the project data: ", projectData)
 
   return (
     <>
@@ -336,7 +383,8 @@ export default function PageInfo({ projectInfo }) {
                 {projectData.percentFunded}% funded
               </p>
               <p className="bg-green-100 text-green-800 rounded-md p-2 px-3 ">
-                {getNoOfBackers()} {getNoOfBackers() == 1 ? "backer": "backers"}
+                {getNoOfBackers()}{" "}
+                {getNoOfBackers() == 1 ? "backer" : "backers"}
               </p>
             </div>
             <div className="">
@@ -353,18 +401,98 @@ export default function PageInfo({ projectInfo }) {
                 <h1 className=" text-xl md:text-2xl text-gray-800">
                   {time(projectInfo.secondsLeft * 1000)}
                 </h1>
-                <p className="text-sm text-gray-500">
-                  remaining
-                </p>
+                <p className="text-sm text-gray-500">remaining</p>
               </div>
             </div>
 
-            <button
-              className="my-6 w-full rounded-md p-2 bg-green-200 text-green-800"
-              onClick={handleSupport}
-            >
-              Support this Project
-            </button>
+            {projectData.secondsLeft > 0 && (
+              <button
+                className="my-6 w-full rounded-md p-2 bg-green-200 text-green-800"
+                onClick={handleSupport}
+              >
+                Support this Project
+              </button>
+            )}
+
+            {projectData.status == "Closed" &&
+              projectData.isFinalized == "false" &&
+              Number(projectData.amountRaisedInDollars) <
+                Number(projectData.goal) && (
+                <button
+                  className="my-6 w-full rounded-md p-2 text-red-800 disabled:cursor-not-allowed disabled:opacity-50"
+                  onClick={handleRefund}
+                  disabled={
+                    isFetchingRefund || isLoadingRefund || promiseInProgress
+                  }
+                >
+                  {isFetchingClaim || isLoadingClaim || promiseInProgress ? (
+                    <div className="flex flex-col w-full justify-between bg-red-300 rounded-md items-center px-3 py-3">
+                      <div className="flex items-center">
+                        <ClipLoader color="#990000" loading="true" size={30} />
+                        <p className="ml-2">
+                          {" "}
+                          {promiseInProgress
+                            ? "Wait a few Seconds"
+                            : "Refunding"}
+                        </p>
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="flex w-full bg-red-300 rounded-md items-center px-3 py-3">
+                      <p className="w-full">Refund Backers</p>
+                    </div>
+                  )}
+                </button>
+              )}
+
+            {projectData.status == "Closed" &&
+              projectData.isFinalized == "false" &&
+              Number(projectData.amountRaisedInDollars) >=
+                Number(projectData.goal) && (
+                <button
+                  className="my-6 w-full rounded-md p-2 text-green-800 disabled:cursor-not-allowed disabled:opacity-50"
+                  onClick={handleClaim}
+                  disabled={
+                    isFetchingClaim || isLoadingClaim || promiseInProgress
+                  }
+                >
+                  {isFetchingClaim || isLoadingClaim || promiseInProgress ? (
+                    <div className="flex flex-col w-full justify-between bg-green-300 rounded-md items-center px-3 py-3">
+                      <div className="flex items-center">
+                        <ClipLoader color="#004d00" loading="true" size={30} />
+                        <p className="ml-2">
+                          {" "}
+                          {promiseInProgress
+                            ? "Wait a few Seconds"
+                            : "Claiming"}
+                        </p>
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="flex w-full bg-green-300 rounded-md items-center px-3 py-3">
+                      <p className="w-full">Claim Funds</p>
+                    </div>
+                  )}
+                </button>
+              )}
+
+            {projectData.status == "Pending" && (
+              <button
+                className="my-6 w-full rounded-md p-2 disabled:opacity-50 bg-green-200 text-green-800"
+                disabled={true}
+              >
+                Support this Project
+              </button>
+            )}
+
+            {projectData.isFinalized == "true" && (
+              <button
+                className="my-6 w-full rounded-md p-2 disabled:opacity-50 bg-yellow-200 text-yellow-800"
+                disabled={true}
+              >
+                Project is Closed
+              </button>
+            )}
           </div>
         </div>
       </section>
@@ -378,13 +506,13 @@ export default function PageInfo({ projectInfo }) {
             handleOnChange={handleOnChange}
             isValidAmount={isValidAmount}
             handlePledge={handlePledge}
-            isFetching={isFetching}
-            isLoading={isLoading}
+            isFetching={isFetchingSupport}
+            isLoading={isLoadingSupport}
           />
         </div>
       )}
 
-    <Footer />
+      <Footer />
     </>
   );
 }

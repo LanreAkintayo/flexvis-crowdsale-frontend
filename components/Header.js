@@ -70,14 +70,14 @@ export default function Header() {
             <Menu iconShape="square">
               <div className="text-xl text-white hover:text-green-700">
                 <MenuItem>
-                  <Link href="/"> Home </Link>
+                  <Link href="/"><p className="text-2xl">Home</p></Link>
                 </MenuItem>
               </div>
               <MenuItem>
-                <Link href="/projects">Projects</Link>
+                <Link href="/projects"><p className="text-2xl">Projects</p></Link>
               </MenuItem>
               <MenuItem>
-                <Link href="/launch">Get Funded</Link>
+                <Link href="/launch"><p className="text-2xl">Get Funded</p></Link>
               </MenuItem>
             </Menu>
           </ProSidebar>
