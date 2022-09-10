@@ -4,6 +4,12 @@ import ProjectCard from "../components/ProjectCard";
 import useSWR, { useSWRConfig } from "swr";
 import { contractAddresses, abi, DEPLOYER } from "../constants";
 import { ethers } from "ethers";
+import {
+  RotateLoader,
+  ClipLoader,
+  PacmanLoader,
+  ScaleLoader,
+} from "react-spinners";
 
 export default function ProjectCardSection() {
   const { isWeb3Enabled, chainId: chainIdHex, enableWeb3 } = useMoralis();
@@ -110,8 +116,28 @@ export default function ProjectCardSection() {
     <section className=" px-5 lg:px-5 w-full">
       <h1 className="text-3xl mt-10">Explore Projects</h1>
       <div className="flex flex-col w-full items-center my-10 mb-14">
-        {allProjects && (
-          <div className={`grid ${allProjects.length >= 4 ? "grid-rows-4": `grid-rows-${allProjects.length}`} grid-cols-1 sm:grid-rows-2 sm:grid-cols-2 lg:grid-rows-1 lg:grid-cols-4 xs:grid-rows-1 xs:grid-cols-4 gap-2 justify-start w-full`}>
+        {isWeb3Enabled && chainId != "97" && (
+          <button className="w-8/12 p-2 test-lg bg-red-100 hover:bg-red-200 text-red-700 hover:text-red-900">
+            Switch to Smartchain Testnet
+          </button>
+        )}
+        {/* {(isFetching || isLoading) && (
+          <div className="flex flex-col w-full items-center">
+            <div className="my-1">
+              <ScaleLoader color="black" loading="true" size={20} />
+            </div>
+
+            <p className="text-gray-500">Please Wait a few seconds</p>
+          </div>
+        )} */}
+        {allProjects && chainId == "97" ? (
+          <div
+            className={`grid ${
+              allProjects.length >= 4
+                ? "grid-rows-4"
+                : `grid-rows-${allProjects.length}`
+            } grid-cols-1 sm:grid-rows-2 sm:grid-cols-2 lg:grid-rows-1 lg:grid-cols-4 xs:grid-rows-1 xs:grid-cols-4 gap-2 justify-start w-full`}
+          >
             {allProjects?.map((projectInfo) => {
               // console.log("Project Info: ", projectInfo);
               //   getTotalAmountRaisedInDollars({
@@ -123,8 +149,18 @@ export default function ProjectCardSection() {
               //     },
               //   });
 
-              return <ProjectCard key={projectInfo.id} projectInfo={projectInfo} />;
+              return (
+                <ProjectCard key={projectInfo.id} projectInfo={projectInfo} />
+              );
             })}
+          </div>
+        ) : (
+          <div className="flex flex-col w-full items-center">
+            <div className="my-1">
+              <ScaleLoader color="black" loading="true" size={20} />
+            </div>
+
+            <p className="text-gray-500">Please Wait a few seconds</p>
           </div>
         )}
 

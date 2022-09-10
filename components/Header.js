@@ -5,6 +5,7 @@ import { ProSidebar, Menu, MenuItem, SubMenu } from "react-pro-sidebar";
 import "react-pro-sidebar/dist/css/styles.css";
 import NavigationDropdown from "./NavigationDropdown";
 import { useEffect, useState, useCallback } from "react";
+import { useMoralis, useWeb3Contract, useChain } from "react-moralis";
 
 const useMediaQuery = (width) => {
   const [targetReached, setTargetReached] = useState(false);
@@ -35,6 +36,11 @@ const useMediaQuery = (width) => {
 export default function Header() {
   const [collapsed, setCollapsed] = useState(true);
   const isBreakpoint = useMediaQuery(912);
+  const { isWeb3Enabled, chainId: chainIdHex, enableWeb3 } = useMoralis();
+  const { switchNetwork, chain, account } = useChain();
+
+  // console.log(chainIdHex)
+  const chainId = parseInt(chainIdHex);
 
   useEffect(() => {
     console.log(collapsed);
@@ -44,7 +50,7 @@ export default function Header() {
   };
 
   return (
-    <div className="h-20 w-screen ">
+    <div className={`ss:${chainId != 97 ? "h-30" : "h-20"} h-30 w-screen `}>
       {/* Navbar */}
 
       {!collapsed && isBreakpoint && (
@@ -107,13 +113,22 @@ export default function Header() {
               </>
             )}
 
-            <div className="text-white flex flex-col w-full items-start">
+            <div className="text-white flex flex-col w-full sc:py-10 items-start">
               {/* <Button type="button" text="Connect Wallet" /> */}
-              <div className="">
+              <div className="px-0">
                 {" "}
                 <ConnectButton text="This is a button" />
               </div>
-              {/* <button className=" text-red-700 p-2 text-sm my-1 cursor-pointer">Wrong Network</button> */}
+              {chainId != "97" && isWeb3Enabled && (
+                <button
+                  className=" ml-4 text-red-700 text-sm my-2 cursor-pointer bg-red-100 rounded-lg p-1 px-2"
+                  onClick={() => {
+                    switchNetwork("0x61");
+                  }}
+                >
+                  Switch to BSC Testnet
+                </button>
+              )}
             </div>
             {isBreakpoint && (
               <div

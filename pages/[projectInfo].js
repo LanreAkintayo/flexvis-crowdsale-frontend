@@ -43,7 +43,7 @@ export default function PageInfo({ projectInfo }) {
     ...projectInfo,
   });
 
-  // console.log("Seconds Left: ", projectInfo.secondsLeft)
+  console.log("Seconds Left: ", projectInfo.secondsLeft)
   // // 1662521824
   // console.log("Current Time: ", Math.floor(Number(new Date().getTime() / 1000)))
   // console.log("End day: ", projectInfo.endDay)
@@ -159,7 +159,7 @@ export default function PageInfo({ projectInfo }) {
         const h = ms % DAY / HOUR | 0;
         const m = ms % HOUR / MIN | 0;
         const s = ms % MIN / SEC | 0;
-        return `${time < 0 ? "-" : ""}${d} Days ${h} Hours`;
+        return `${time < 0 ? "-" : ""}${d} Days ${h} Hours ${h == 0 && `${m} Minutes`}`;
         // ${m}Minute(s) ${s}Second(s)
     };
 })();
