@@ -11,10 +11,10 @@ import {
   PacmanLoader,
   ScaleLoader,
 } from "react-spinners";
+import { toWei, fromWei, time } from "../utils/helper";
 
 export default function Table() {
-
-  const { isWeb3Enabled, chainId: chainIdHex, enableWeb3} = useMoralis();
+  const { isWeb3Enabled, chainId: chainIdHex, enableWeb3 } = useMoralis();
   const { switchNetwork, chain, account } = useChain();
 
   const chainId = parseInt(chainIdHex);
@@ -34,7 +34,7 @@ export default function Table() {
     contractAddress: sfInvestmentAddress,
     functionName: "getAllInvestments",
     params: {
-      investor: account
+      investor: account,
     },
   });
 
@@ -55,24 +55,21 @@ export default function Table() {
         provider
       );
 
-      const filteredUserInvestments = userInvestments.filter(investment => {
-        const investmentID = investment[0]
-        console.log("investmentID", investmentID)
-        if (investmentID != "0x00000000000000000000000000000000"){
+      const filteredUserInvestments = userInvestments.filter((investment) => {
+        const investmentID = investment[0];
+        // console.log("investmentID", investmentID);
+        if (investmentID != "0x00000000000000000000000000000000") {
           return true;
-        } else{
-          return false
+        } else {
+          return false;
         }
-      })
+      });
 
-      console.log("filteredUserInvestments: ", filteredUserInvestments)
-
+      // console.log("filteredUserInvestments: ", filteredUserInvestments);
 
       return filteredUserInvestments.reverse();
     }
   );
-
-  console.log("Outside: ", userInvestments)
 
 
   return (
@@ -89,6 +86,9 @@ export default function Table() {
             <th scope="col" className="py-3 pl-3">
               Lock Up
             </th>
+            <th scope="col" className="py-3 pl-3">
+              TIME LEFT
+            </th>
 
             <th scope="col" className="py-3 pl-3">
               Amount Staked
@@ -96,43 +96,41 @@ export default function Table() {
             <th scope="col" className="py-3 pl-3">
               Interest/APY
             </th>
+            <th scope="col" className="py-3 pl-3">
+              Action
+            </th>
           </tr>
         </thead>
 
         <tbody className="border border-t-0 border-gray-700">
-          <tr className="bg-white  dark:bg-gray-800 dark:border-gray-700">
-            <th
-              scope="row"
-              className="py-4 pl-3 font-medium text-gray-900 whitespace-nowrap dark:text-white"
-            >
-              1
-            </th>
-            <td className="py-4 pl-6">30 days</td>
-            <td className="py-4 pl-6">400 Flexvis</td>
-            <td className="py-4 pl-6">80 Flexvis</td>
-          </tr>
-          <tr className="bg-white  dark:bg-gray-800 dark:border-gray-700">
-            <th
-              scope="row"
-              className="py-4 pl-3 font-medium text-gray-900 whitespace-nowrap dark:text-white"
-            >
-              1
-            </th>
-            <td className="py-4 pl-6">30 days</td>
-            <td className="py-4 pl-6">400 Flexvis</td>
-            <td className="py-4 pl-6">80 Flexvis</td>
-          </tr>
-          <tr className="bg-white  dark:bg-gray-800 dark:border-gray-700">
-            <th
-              scope="row"
-              className="py-4 pl-3 font-medium text-gray-900 whitespace-nowrap dark:text-white"
-            >
-              1
-            </th>
-            <td className="py-4 pl-6">30 days</td>
-            <td className="py-4 pl-6">400 Flexvis</td>
-            <td className="py-4 pl-6">80 Flexvis</td>
-          </tr>
+          {userInvestments?.map((investment) => {
+            // console.log(fromWei(investment.investedAmount));
+            const investingTime = time(Number(investment.investingDays) * 1000);
+            const day = investingTime.day
+            const hour = investingTime.hour
+            const minute = investingTime.minute
+
+            return (
+              <tr className="bg-white  dark:bg-gray-800 dark:border-gray-700">
+                <td className="py-4 pl-3">{investment.investmentID}</td>
+                <td className="py-4 pl-3">
+                  {time(Number(investment.investingDays) * 1000).day} days
+                </td>
+                <td className="py-4 pl-3 ">{`${day} Days ${day == 0 ? `, ${hour} Hours ${hour == 0 ? `, ${minute} minutes`: ""}`: ""} `}</td>
+                <td className="py-4 pl-3">
+                  {fromWei(investment.investedAmount)} Flexvis
+                </td>
+                <td className="py-4 pl-3">
+                  {fromWei(investment.reward)} Flexvis
+                </td>
+                <td className="py-4 pl-3 ">
+                  <button className="bg-yellow-200 text-yellow-800 my-2 p-2 rounded-md" onClick={() => console.log("End this investment")}>
+                    End Investment
+                  </button>
+                </td>
+              </tr>
+            );
+          })}
         </tbody>
       </table>
     </div>

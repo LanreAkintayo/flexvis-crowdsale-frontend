@@ -74,6 +74,7 @@
     "payable": false,
     "inputs": [
       { "type": "uint256", "name": "amount" },
+      { "type": "uint256", "name": "startDay" },
       { "type": "uint256", "name": "duration" }
     ],
     "outputs": [{ "type": "bytes16", "name": "investmentID" }]
