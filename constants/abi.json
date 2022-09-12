@@ -1,1 +1,233 @@
-[{"type":"error","name":"GoalAlreadyReached","inputs":[]},{"type":"error","name":"GoalNotMet","inputs":[]},{"type":"error","name":"InvalidPledge","inputs":[]},{"type":"error","name":"InvalidProject","inputs":[]},{"type":"error","name":"NotAvailableForPledging","inputs":[]},{"type":"error","name":"NotOwner","inputs":[]},{"type":"error","name":"ProjectStillOpen","inputs":[]},{"type":"error","name":"StartedAlready","inputs":[]},{"type":"error","name":"TokenNotSupported","inputs":[]},{"type":"event","anonymous":false,"name":"OwnershipTransferred","inputs":[{"type":"address","name":"previousOwner","indexed":true},{"type":"address","name":"newOwner","indexed":true}]},{"type":"function","name":"WBNB","constant":true,"stateMutability":"view","payable":false,"inputs":[],"outputs":[{"type":"address"}]},{"type":"function","name":"allProjects","constant":true,"stateMutability":"view","payable":false,"inputs":[{"type":"uint256"}],"outputs":[{"type":"address","name":"owner"},{"type":"uint256","name":"id"},{"type":"uint256","name":"startDay"},{"type":"uint256","name":"endDay"},{"type":"uint256","name":"goal"},{"type":"string","name":"projectTitle"},{"type":"string","name":"projectSubtitle"},{"type":"string","name":"projectNote"},{"type":"string","name":"projectImageUrl"},{"type":"bool","name":"isFinalized"}]},{"type":"function","name":"backers","constant":true,"stateMutability":"view","payable":false,"inputs":[{"type":"uint256"},{"type":"uint256"}],"outputs":[{"type":"address","name":"backerAddress"},{"type":"address","name":"tokenAddress"},{"type":"uint256","name":"amount"}]},{"type":"function","name":"claim","constant":false,"payable":false,"inputs":[{"type":"uint256","name":"_id"}],"outputs":[]},{"type":"function","name":"close","constant":false,"payable":false,"inputs":[{"type":"uint256","name":"_id"}],"outputs":[]},{"type":"function","name":"getAllProjects","constant":true,"stateMutability":"view","payable":false,"inputs":[],"outputs":[{"type":"tuple[]","components":[{"type":"address","name":"owner"},{"type":"uint256","name":"id"},{"type":"uint256","name":"startDay"},{"type":"uint256","name":"endDay"},{"type":"uint256","name":"goal"},{"type":"string","name":"projectTitle"},{"type":"string","name":"projectSubtitle"},{"type":"string","name":"projectNote"},{"type":"string","name":"projectImageUrl"},{"type":"bool","name":"isFinalized"}]}]},{"type":"function","name":"getBackers","constant":true,"stateMutability":"view","payable":false,"inputs":[{"type":"uint256","name":"_id"}],"outputs":[{"type":"tuple[]","components":[{"type":"address","name":"backerAddress"},{"type":"address","name":"tokenAddress"},{"type":"uint256","name":"amount"}]}]},{"type":"function","name":"getSupportedTokensAddress","constant":true,"stateMutability":"view","payable":false,"inputs":[],"outputs":[{"type":"address[]"}]},{"type":"function","name":"getTotalAmountRaisedInDollars","constant":true,"stateMutability":"view","payable":false,"inputs":[{"type":"uint256","name":"_id"}],"outputs":[{"type":"uint256"}]},{"type":"function","name":"launch","constant":false,"payable":false,"inputs":[{"type":"uint256","name":"startDay"},{"type":"uint256","name":"duration"},{"type":"uint256","name":"goal"},{"type":"string","name":"projectTitle"},{"type":"string","name":"projectSubtitle"},{"type":"string","name":"projectNote"},{"type":"string","name":"projectImageUrl"}],"outputs":[]},{"type":"function","name":"owner","constant":true,"stateMutability":"view","payable":false,"inputs":[],"outputs":[{"type":"address"}]},{"type":"function","name":"pledge","constant":false,"payable":false,"inputs":[{"type":"uint256","name":"_id"},{"type":"address","name":"tokenAddress"},{"type":"uint256","name":"amount"}],"outputs":[]},{"type":"function","name":"projects","constant":true,"stateMutability":"view","payable":false,"inputs":[{"type":"uint256"}],"outputs":[{"type":"address","name":"owner"},{"type":"uint256","name":"id"},{"type":"uint256","name":"startDay"},{"type":"uint256","name":"endDay"},{"type":"uint256","name":"goal"},{"type":"string","name":"projectTitle"},{"type":"string","name":"projectSubtitle"},{"type":"string","name":"projectNote"},{"type":"string","name":"projectImageUrl"},{"type":"bool","name":"isFinalized"}]},{"type":"function","name":"refund","constant":false,"payable":false,"inputs":[{"type":"uint256","name":"_id"}],"outputs":[]},{"type":"function","name":"renounceOwnership","constant":false,"payable":false,"inputs":[],"outputs":[]},{"type":"function","name":"setSupportedTokensAddress","constant":false,"payable":false,"inputs":[{"type":"address[]","name":"tokensAddress"}],"outputs":[]},{"type":"function","name":"setTokenToPriceFeed","constant":false,"payable":false,"inputs":[{"type":"address","name":"tokenAddress"},{"type":"address","name":"priceFeed"}],"outputs":[]},{"type":"function","name":"setWBNBAddress","constant":false,"payable":false,"inputs":[{"type":"address","name":"newAddress"}],"outputs":[]},{"type":"function","name":"supportedTokensAddress","constant":true,"stateMutability":"view","payable":false,"inputs":[{"type":"uint256"}],"outputs":[{"type":"address"}]},{"type":"function","name":"tokenToPriceFeed","constant":true,"stateMutability":"view","payable":false,"inputs":[{"type":"address"}],"outputs":[{"type":"address"}]},{"type":"function","name":"transferOwnership","constant":false,"payable":false,"inputs":[{"type":"address","name":"newOwner"}],"outputs":[]},{"type":"function","name":"unpledge","constant":false,"payable":false,"inputs":[{"type":"uint256","name":"_id"},{"type":"address","name":"tokenAddress"},{"type":"uint256","name":"amount"}],"outputs":[]}]
+[
+  {
+    "type": "constructor",
+    "payable": false,
+    "inputs": [{ "type": "address", "name": "_flexvis" }]
+  },
+  {
+    "type": "event",
+    "anonymous": false,
+    "name": "InvestmentStarted",
+    "inputs": [
+      { "type": "bytes16", "name": "investmentID", "indexed": true },
+      { "type": "address", "name": "investor", "indexed": true },
+      { "type": "uint256", "name": "investedAmount", "indexed": false },
+      { "type": "uint256", "name": "startDay", "indexed": true },
+      { "type": "uint256", "name": "investingDays", "indexed": false }
+    ]
+  },
+  {
+    "type": "event",
+    "anonymous": false,
+    "name": "OwnershipTransferred",
+    "inputs": [
+      { "type": "address", "name": "previousOwner", "indexed": true },
+      { "type": "address", "name": "newOwner", "indexed": true }
+    ]
+  },
+  {
+    "type": "function",
+    "name": "MIN_AMOUNT",
+    "constant": true,
+    "stateMutability": "view",
+    "payable": false,
+    "inputs": [],
+    "outputs": [{ "type": "uint256" }]
+  },
+  {
+    "type": "function",
+    "name": "TREASURY",
+    "constant": true,
+    "stateMutability": "view",
+    "payable": false,
+    "inputs": [],
+    "outputs": [{ "type": "address" }]
+  },
+  {
+    "type": "function",
+    "name": "allInvestment",
+    "constant": true,
+    "stateMutability": "view",
+    "payable": false,
+    "inputs": [{ "type": "address" }, { "type": "uint256" }],
+    "outputs": [
+      { "type": "bytes16", "name": "investmentID" },
+      { "type": "uint256", "name": "investedAmount" },
+      { "type": "uint256", "name": "startDay" },
+      { "type": "uint256", "name": "investingDays" },
+      { "type": "uint256", "name": "reward" }
+    ]
+  },
+  {
+    "type": "function",
+    "name": "allInvestors",
+    "constant": true,
+    "stateMutability": "view",
+    "payable": false,
+    "inputs": [{ "type": "uint256" }],
+    "outputs": [{ "type": "address" }]
+  },
+  {
+    "type": "function",
+    "name": "createInvestment",
+    "constant": false,
+    "payable": false,
+    "inputs": [
+      { "type": "uint256", "name": "amount" },
+      { "type": "uint256", "name": "duration" }
+    ],
+    "outputs": [{ "type": "bytes16", "name": "investmentID" }]
+  },
+  {
+    "type": "function",
+    "name": "endInvestment",
+    "constant": false,
+    "payable": false,
+    "inputs": [{ "type": "bytes16", "name": "investmentID" }],
+    "outputs": []
+  },
+  {
+    "type": "function",
+    "name": "flexvis",
+    "constant": true,
+    "stateMutability": "view",
+    "payable": false,
+    "inputs": [],
+    "outputs": [{ "type": "address" }]
+  },
+  {
+    "type": "function",
+    "name": "generateID",
+    "constant": true,
+    "stateMutability": "pure",
+    "payable": false,
+    "inputs": [
+      { "type": "address", "name": "x" },
+      { "type": "uint256", "name": "y" },
+      { "type": "bytes1", "name": "z" }
+    ],
+    "outputs": [{ "type": "bytes16", "name": "b" }]
+  },
+  {
+    "type": "function",
+    "name": "getAllInvestments",
+    "constant": true,
+    "stateMutability": "view",
+    "payable": false,
+    "inputs": [{ "type": "address", "name": "investor" }],
+    "outputs": [
+      {
+        "type": "tuple[]",
+        "components": [
+          { "type": "bytes16", "name": "investmentID" },
+          { "type": "uint256", "name": "investedAmount" },
+          { "type": "uint256", "name": "startDay" },
+          { "type": "uint256", "name": "investingDays" },
+          { "type": "uint256", "name": "reward" }
+        ]
+      }
+    ]
+  },
+  {
+    "type": "function",
+    "name": "getAllInvestors",
+    "constant": true,
+    "stateMutability": "view",
+    "payable": false,
+    "inputs": [],
+    "outputs": [{ "type": "address[]" }]
+  },
+  {
+    "type": "function",
+    "name": "getInvestmentInfo",
+    "constant": true,
+    "stateMutability": "view",
+    "payable": false,
+    "inputs": [
+      { "type": "address", "name": "_user" },
+      { "type": "bytes16", "name": "_investmentID" }
+    ],
+    "outputs": [
+      { "type": "uint256", "name": "investedAmount" },
+      { "type": "uint256", "name": "reward" },
+      { "type": "uint256", "name": "startDay" },
+      { "type": "uint256", "name": "investingDays" },
+      { "type": "uint256", "name": "count" }
+    ]
+  },
+  {
+    "type": "function",
+    "name": "hasInvestment",
+    "constant": true,
+    "stateMutability": "view",
+    "payable": false,
+    "inputs": [{ "type": "address", "name": "_user" }],
+    "outputs": [{ "type": "bool" }]
+  },
+  {
+    "type": "function",
+    "name": "initializeContract",
+    "constant": false,
+    "payable": false,
+    "inputs": [{ "type": "address", "name": "_treasury" }],
+    "outputs": []
+  },
+  {
+    "type": "function",
+    "name": "investmentCount",
+    "constant": true,
+    "stateMutability": "view",
+    "payable": false,
+    "inputs": [{ "type": "address" }],
+    "outputs": [{ "type": "uint256" }]
+  },
+  {
+    "type": "function",
+    "name": "investments",
+    "constant": true,
+    "stateMutability": "view",
+    "payable": false,
+    "inputs": [{ "type": "address" }, { "type": "bytes16" }],
+    "outputs": [
+      { "type": "bytes16", "name": "investmentID" },
+      { "type": "uint256", "name": "investedAmount" },
+      { "type": "uint256", "name": "startDay" },
+      { "type": "uint256", "name": "investingDays" },
+      { "type": "uint256", "name": "reward" }
+    ]
+  },
+  {
+    "type": "function",
+    "name": "owner",
+    "constant": true,
+    "stateMutability": "view",
+    "payable": false,
+    "inputs": [],
+    "outputs": [{ "type": "address" }]
+  },
+  {
+    "type": "function",
+    "name": "renounceOwnership",
+    "constant": false,
+    "payable": false,
+    "inputs": [],
+    "outputs": []
+  },
+  {
+    "type": "function",
+    "name": "totalInvested",
+    "constant": true,
+    "stateMutability": "view",
+    "payable": false,
+    "inputs": [],
+    "outputs": [{ "type": "uint256" }]
+  },
+  {
+    "type": "function",
+    "name": "transferOwnership",
+    "constant": false,
+    "payable": false,
+    "inputs": [{ "type": "address", "name": "newOwner" }],
+    "outputs": []
+  }
+]

@@ -1,4 +1,80 @@
+import { useMoralis, useWeb3Contract, useChain } from "react-moralis";
+import { useEffect, useState } from "react";
+import ProjectCard from "../components/ProjectCard";
+import useSWR, { useSWRConfig } from "swr";
+import { contractAddresses, abi, DEPLOYER } from "../constants";
+import { ethers } from "ethers";
+import { useRouter } from "next/router";
+import {
+  RotateLoader,
+  ClipLoader,
+  PacmanLoader,
+  ScaleLoader,
+} from "react-spinners";
+
 export default function Table() {
+
+  const { isWeb3Enabled, chainId: chainIdHex, enableWeb3} = useMoralis();
+  const { switchNetwork, chain, account } = useChain();
+
+  const chainId = parseInt(chainIdHex);
+
+  const length = contractAddresses[chainId]?.length;
+  const sfInvestmentAddress =
+    chainId in contractAddresses
+      ? contractAddresses[chainId][length - 1]
+      : null;
+
+  const {
+    runContractFunction: getAllInvestments,
+    isFetching,
+    isLoading,
+  } = useWeb3Contract({
+    abi: abi,
+    contractAddress: sfInvestmentAddress,
+    functionName: "getAllInvestments",
+    params: {
+      investor: account
+    },
+  });
+
+  const {
+    data: userInvestments,
+    error,
+    mutate,
+  } = useSWR(
+    () => (isWeb3Enabled ? "web3/userInvestments" : null),
+    async () => {
+      const userInvestments = await getAllInvestments({
+        onError: (error) => console.log(error),
+      });
+      const provider = await enableWeb3();
+      const sfInvestmentContract = new ethers.Contract(
+        sfInvestmentAddress,
+        abi,
+        provider
+      );
+
+      const filteredUserInvestments = userInvestments.filter(investment => {
+        const investmentID = investment[0]
+        console.log("investmentID", investmentID)
+        if (investmentID != "0x00000000000000000000000000000000"){
+          return true;
+        } else{
+          return false
+        }
+      })
+
+      console.log("filteredUserInvestments: ", filteredUserInvestments)
+
+
+      return filteredUserInvestments.reverse();
+    }
+  );
+
+  console.log("Outside: ", userInvestments)
+
+
   return (
     <div className="overflow-x-auto relative">
       <div className="border border-gray-700">

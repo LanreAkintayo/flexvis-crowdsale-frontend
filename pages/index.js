@@ -15,6 +15,8 @@ import Table from "../components/Table";
 
 export default function Home() {
 
+ 
+
   return (
     <div className="w-screen max-w-max">
       <Header />
