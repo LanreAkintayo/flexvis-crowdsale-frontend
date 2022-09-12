@@ -1,5 +1,6 @@
 import useSWR, { useSWRConfig } from "swr";
 import { useMoralis, useChain, useWeb3Contract } from "react-moralis";
+import {ethers} from "ethers"
 
 import {
   contractAddresses,
@@ -20,7 +21,8 @@ export default function Dashboard() {
   } = useSWR(
     () => (isWeb3Enabled ? "web3/flexvisBalance" : null),
     async () => {
-      const provider = await enableWeb3();
+        const provider = await enableWeb3()
+
       const flexvisContract = new ethers.Contract(
         flexvisAddress,
         erc20Abi,
@@ -30,16 +32,13 @@ export default function Dashboard() {
       console.log("Account: ", account)
       console.log("Flexvis contract: ", flexvisContract)
 
-      const signer = provider.getSigner(account);
       const balance = await flexvisContract.balanceOf(account);
 
-      console.log(balance)
+      const formattedBalance = ethers.utils.formatEther(balance)
 
-      return balance;
+      return formattedBalance;
     }
   );
-
-  console.log(flexvisBalance)
 
   return (
     <>

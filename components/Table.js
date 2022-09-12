@@ -84,57 +84,76 @@ export default function Table({
 
   return (
     <div className="overflow-x-auto relative">
-      <div className="border border-gray-700">
+      {/* <div className="border border-gray-700">
         <p className="py-5 px-2 text-xl text-center">Regular Flex Investment</p>
-      </div>
+      </div> */}
+      {/* {(isLoading || isFetching) && (
+          <div className="flex flex-col w-full my-8 items-center">
+            <div className="my-1">
+              <ScaleLoader color="black" loading="true" size={20} />
+            </div>
+
+            <p className="text-gray-500">Please Wait a few seconds</p>
+          </div>
+        )} */}
+
       <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400">
-        <thead className="text-gray-700 uppercase bg-gray-50 border-t-0 border-b-0 border-l border-r border-gray-700  dark:bg-gray-700 dark:text-gray-400">
-          <tr className="text-gray-800 text-lg border-t-0 border-b-0 border-gray-700 bg-gray-200">
-            <th scope="col" className="py-3 pl-3">
-              Stake Created
-            </th>
-            <th scope="col" className="py-3 pl-3">
-              Lock Up
-            </th>
-            <th scope="col" className="py-3 pl-3">
-              TIME LEFT
-            </th>
+        {isWeb3Enabled && userInvestments?.length == 0 ? (
+          <div className="w-full text-center text-xl">
+            You have no Investment
+          </div>
+        ) : (
+          <thead className="text-gray-700 uppercase bg-gray-50 border-t border-b-0 border-l border-r border-gray-400  dark:bg-gray-300 dark:text-gray-400">
+            <tr className="text-gray-800 text-lg border-t-0 border-b-0 border-gray-300 bg-gray-200">
+              <th scope="col" className="py-3 pl-3">
+                Stake Created
+              </th>
+              <th scope="col" className="py-3 pl-3">
+                Lock Up
+              </th>
+              <th scope="col" className="py-3 pl-3">
+                TIME LEFT
+              </th>
 
-            <th scope="col" className="py-3 pl-3">
-              Amount Staked
-            </th>
-            <th scope="col" className="py-3 pl-3">
-              Interest/APY
-            </th>
-            <th scope="col" className="py-3 pl-3">
-              Action
-            </th>
-          </tr>
-        </thead>
+              <th scope="col" className="py-3 pl-3">
+                Amount Staked
+              </th>
+              <th scope="col" className="py-3 pl-3">
+                Interest/APY
+              </th>
+              <th scope="col" className="py-3 pl-3">
+                Action
+              </th>
+            </tr>
+          </thead>
+        )}
 
-        <tbody className="border border-t-0 border-gray-700">
+        <tbody className="border border-t-0 border-gray-400">
           {userInvestments?.map((investment) => {
-            // console.log(Number(investment.investingDays));
             const investingTime = time(Number(investment.investingDays) * 1000);
-            const day = investingTime.day;
-            const hour = investingTime.hour;
-            const minute = investingTime.minute;
+            const timeLeft = time(
+              1000 *
+                (Number(investment.startDay) +
+                  Number(investment.investingDays)) -
+                Number(new Date().getTime())
+            );
+            console.log("Time Left: ", timeLeft);
+            const day = timeLeft.day;
+            const hour = timeLeft.hour;
+            const minute = timeLeft.minute;
 
-            // console.log(investingTime)
+            console.log(timeLeft.day);
 
             return (
-              <tr className="bg-white  dark:bg-gray-800 dark:border-gray-700">
+              <tr className="bg-white  dark:bg-gray-800 dark:border-gray-400" key={investment.investmentID}>
                 <td className="py-2 pl-3">{investment.investmentID}</td>
                 <td className="py-2 pl-3">
                   {time(Number(investment.investingDays) * 1000).day} days
                 </td>
-                <td className="py-2 pl-3 ">{`${day} Days ${
-                  day == 0
-                    ? `, ${hour} Hours ${
-                        hour == 0 ? `, ${minute} minutes` : ""
-                      }`
-                    : ""
-                } `}</td>
+                <td className="py-2 pl-3 ">{`${day} Days,  ${hour} Hours ${
+                  hour == 0 ? `, ${minute} minutes` : ""
+                }
+                     `}</td>
                 <td className="py-2 pl-3">
                   {fromWei(investment.investedAmount)} Flexvis
                 </td>
@@ -153,7 +172,9 @@ export default function Table({
                     }}
                   >
                     {investment.investmentID == currentID &&
-                    (isFetchingEnd || isLoadingEnd || tablePromiseInProgress) ? (
+                    (isFetchingEnd ||
+                      isLoadingEnd ||
+                      tablePromiseInProgress) ? (
                       <div className="flex flex-col w-full justify-between bg-yellow-200 rounded-md items-center p-2">
                         <div className="flex items-center">
                           <ClipLoader

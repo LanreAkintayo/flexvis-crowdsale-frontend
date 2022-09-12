@@ -130,6 +130,7 @@ export default function Home() {
     // const updatedInvestments = await sfInvestmentContract.getAllInvestments(account)
 
     await mutate("web3/userInvestments");
+    await mutate("web3/flexvisBalance");
     setCloseCreateModal(false);
 
     dispatch({
@@ -153,7 +154,10 @@ export default function Home() {
   return (
     <div className="w-screen max-w-max">
       <Header />
-     <Dashboard />
+      <div className="w-full flex justify-end px-5 items-end">
+        <Dashboard />
+      </div>
+      
       <section className="px-11">
         <h1 className="text-3xl my-4 text-center">Flexvis Investment</h1>
         <button
@@ -162,7 +166,7 @@ export default function Home() {
         >
           Create a Flex Investment{" "}
         </button>
-        <div>
+        <div className="mb-8">
           <Table
             handleEndInvestment={handleEndInvestment}
             isFetchingEnd={isFetchingEnd}
