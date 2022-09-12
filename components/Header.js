@@ -3,7 +3,6 @@ import { CryptoCards, Button } from "@web3uikit/core";
 import { ConnectButton } from "web3uikit";
 import { ProSidebar, Menu, MenuItem, SubMenu } from "react-pro-sidebar";
 import "react-pro-sidebar/dist/css/styles.css";
-import NavigationDropdown from "./NavigationDropdown";
 import { useEffect, useState, useCallback } from "react";
 import { useMoralis, useWeb3Contract, useChain } from "react-moralis";
 

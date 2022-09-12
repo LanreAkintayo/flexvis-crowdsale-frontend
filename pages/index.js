@@ -1,7 +1,6 @@
 import Head from "next/head";
 import Image from "next/image";
-import Footer from "../components/Footer";
-import Header from "../components/Header";
+
 import { CryptoCards, Button } from "@web3uikit/core";
 import { useMoralis, useChain, useWeb3Contract } from "react-moralis";
 import { useEffect, useState } from "react";
@@ -16,6 +15,7 @@ import { useNotification } from "web3uikit";
 import { usePromiseTracker, trackPromise } from "react-promise-tracker";
 import { ethers } from "ethers";
 import Dashboard from "../components/Dashboard";
+import Header from "../components/Header";
 
 export default function Home() {
   const { isWeb3Enabled, chainId: chainIdHex, enableWeb3 } = useMoralis();

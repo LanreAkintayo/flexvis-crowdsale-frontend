@@ -1,6 +1,5 @@
 import { useMoralis, useWeb3Contract, useChain } from "react-moralis";
 import { useEffect, useState } from "react";
-import ProjectCard from "../components/ProjectCard";
 import useSWR, { useSWRConfig } from "swr";
 import { contractAddresses, abi, DEPLOYER } from "../constants";
 import { ethers } from "ethers";
