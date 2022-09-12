@@ -9,8 +9,11 @@ export default function CreateModal(
   {
     investmentInfo,
     setInvestmentInfo,
-    handleCreateInvestment
-    //   handleCloseCreateModal
+    handleCreateInvestment,
+      handleCloseCreateModal,
+      isFetchingCreate,
+      isLoadingCreate,
+      setCloseCreateModal
   }
 ) {
   // const handleOnChange = (event) => {
@@ -20,10 +23,12 @@ export default function CreateModal(
 
   
 
-  const [isValidAmount, setIsValidAmount] = useState(false);
+  const [isValidAmount, setIsValidAmount] = useState(true);
   const [isValidStartDate, setIsValidStartDate] = useState(true);
-  const [isValidDuration, setIsValidDuration] = useState(false);
+  const [isValidDuration, setIsValidDuration] = useState(true);
   const [allValid, setAllValid] = useState(false);
+
+  const { promiseInProgress:modalPromiseInProgress } = usePromiseTracker();
 
   useEffect(() => {
     setAllValid(
@@ -55,6 +60,7 @@ export default function CreateModal(
     }
     if (event.target.id == "amount") {
       amount = event.target.value;
+      console.log("Amount is ", amount)
 
       setIsValidAmount(() => {
         if (/^\$?\d+(,\d{3})*(\.\d*)?$/.test(amount.toString())) {
@@ -88,7 +94,7 @@ export default function CreateModal(
                   Create an Investment
                 </div>
                 <button
-                  //   onClick={handleCloseCreateModal}
+                    onClick={() => setCloseCreateModal(false)}
                   type="button"
                   className="text-gray-400 bg-transparent dark:hover:bg-gray-600 dark:hover:text-white hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center"
                   data-modal-toggle="small-modal"
@@ -120,10 +126,17 @@ export default function CreateModal(
                     className="w-80 block pl-2 font-medium text-lg focus:outline-none rounded-md"
                   />
                 </div>
+                {!isValidAmount && (
+                    <p className="text-red-700 text-sm">
+                      <small>
+                        Invalid Amount
+                      </small>
+                    </p>
+                  )}
               </div>
 
               <div className="flex flex-col  my-2">
-                <p className="text-sm text-gray-600">Enter Start Date</p>
+                <p className="text-sm text-gray-600">Start Date</p>
                 <div>
                   <div className="flex bg-gray-50 border px-2 border-gray-300 items-center p-2">
                     <svg
@@ -190,41 +203,40 @@ export default function CreateModal(
                     className="w-80 block pl-2 font-medium text-lg focus:outline-none rounded-md"
                   />
                 </div>
-                {/* {!isValidAmount && (
+                {!isValidDuration && (
                   <p className="text-red-700 test-sm">
                     <small>
-                      <small>Invalid Amount</small>
+                      <small>Duration is not valid</small>
                     </small>
                   </p>
-                )} */}
+                )}
               </div>
 
               <button
-                className={`p-2 w-full text-gray-800 bg-gray-200 text-center rounded-md font-medium text-xl disabled:cursor-not-allowed disabled:opacity-50`}
+                className={`p-2 w-full text-gray-800 text-center rounded-md font-medium text-xl disabled:cursor-not-allowed disabled:opacity-50`}
                 onClick={handleCreateInvestment}
                 disabled={
-                  !isValidAmount ||
-                  !isValidStartDate 
-                //   isFetching ||
-                //   isLoading ||
-                //   promiseInProgress
+                  !allValid ||
+                  isFetchingCreate ||
+                  isLoadingCreate ||
+                  modalPromiseInProgress
                 }
               >
-                Create
-                {/* {(isFetching || isLoading || promiseInProgress) ? (
-                  <div className="flex flex-col w-full justify-between bg-green-300 rounded-md items-center px-3 py-3">
+              
+                {(isFetchingCreate || isLoadingCreate || modalPromiseInProgress) ? (
+                  <div className="flex flex-col w-full justify-between bg-gray-300 rounded-md items-center px-3 py-3">
                     <div className="flex">
                       <ClipLoader color="#004d00" loading="true" size={30} />
-                      <p className="ml-2"> {promiseInProgress
+                      <p className="ml-2"> {modalPromiseInProgress
                     ? "Wait a few Seconds"
-                    : "Pledging"}</p>
+                    : "Creating"}</p>
                     </div>
                   </div>
                 ) : (
-                  <div className="flex w-full bg-green-300 rounded-md items-center px-3 py-3">
-                    <p className="w-full">Pledge</p>
+                  <div className="flex w-full bg-gray-300 rounded-md items-center px-3 py-3">
+                    <p className="w-full">Create</p>
                   </div>
-                )} */}
+                )}
               </button>
             </div>
           </div>
