@@ -20,7 +20,6 @@ import {
 } from "../constants";
 import "react-pro-sidebar/dist/css/styles.css";
 import Link from "next/link";
-import Table from "../components/Table";
 import BuyModal from "../components/BuyModal";
 import { toWei, fromWei, time, sDuration } from "../utils/helper";
 import { RotateLoader, ClipLoader } from "react-spinners";
