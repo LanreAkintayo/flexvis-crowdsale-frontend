@@ -133,7 +133,7 @@ export default function BuyModal(
                       <ClipLoader color="#004d00" loading="true" size={30} />
                       <p className="ml-2"> {modalPromiseInProgress
                     ? "Wait a few Seconds"
-                    : "Creating"}</p>
+                    : "Buying Token"}</p>
                     </div>
                   </div>
                 ) : (

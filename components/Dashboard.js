@@ -10,45 +10,24 @@ import {
   flexvisAddress,
 } from "../constants";
 
-export default function Dashboard() {
-  const { isWeb3Enabled, chainId: chainIdHex, enableWeb3 } = useMoralis();
-  const { switchNetwork, chain, account } = useChain();
+import {fromWei, now, toWei} from "../utils/helper"
 
-  const {
-    data: flexvisBalance,
-    error,
-    mutate,
-  } = useSWR(
-    () => (isWeb3Enabled ? "web3/flexvisBalance" : null),
-    async () => {
-        const provider = await enableWeb3()
-
-      const flexvisContract = new ethers.Contract(
-        flexvisAddress,
-        erc20Abi,
-        provider
-      );
-
-      console.log("Account: ", account)
-      console.log("Flexvis contract: ", flexvisContract)
-
-      const balance = await flexvisContract.balanceOf(account);
-
-      const formattedBalance = ethers.utils.formatEther(balance)
-
-      return formattedBalance;
-    }
-  );
+export default function Dashboard({presaleInfo}) {
+  let dollarUSLocale = Intl.NumberFormat("en-US");
+    // amount = dollarUSLocale.format(price).toString();
+    const purchasedFlexvis = dollarUSLocale.format(fromWei(presaleInfo.accountBalance || 0).toString());
+  const flexvisAccountBalance = dollarUSLocale.format(fromWei(presaleInfo.flexvisAccountBalance || 0).toString());
 
   return (
     <>
-      {account && flexvisBalance && (
+      { (
         <div className="my-4 mx-4 bg-purple-200 p-2 w-80 text-purple-900 rounded-md">
           <p>
-            Account: {account.toString().substring(0, 5)}...
-            {account.toString().substring(account.length - 6, account.length)}
+            Account: {presaleInfo.account.toString().substring(0, 5)}...
+            {presaleInfo.account.toString().substring(presaleInfo.account.length - 6, presaleInfo.account.length)}
           </p>
-          <p>Flexvis Balance: {flexvisBalance || "0"} FLEXVIS</p>{" "}
+          <p><span className="">Flexvis Balance: </span> {flexvisAccountBalance || "0"} FLEXVIS</p>{" "}
+          <p>Purchased Balance: { purchasedFlexvis|| "0"} FLEXVIS</p>{" "}
         </div>
       )}
     </>

@@ -29,6 +29,9 @@ export const sDuration = {
   },
 };
 
+export const now = () => {
+  return new Date().getTime()
+}
 
 
 export const time = ((milliseconds) => {
