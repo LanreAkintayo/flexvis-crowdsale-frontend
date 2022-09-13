@@ -32,7 +32,7 @@ export default function PresaleDetails({ presaleInfo }) {
                 ></div>
               </div>
               <div className="w-96 flex py-2 justify-between">
-                <p className="text-base">{presaleInfo.percentRaised}% raised</p>
+                <p className="text-base">{presaleInfo.scaleValue}% raised</p>
                 <p className="text-base">
                   1 FLEXVIS = {1 / presaleInfo.rate} BNB
                 </p>
