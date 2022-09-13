@@ -12,7 +12,7 @@ export default function TimerCountdown({ millisecondsLeft }) {
       // Render a countdown
       return (
         <div className="w-full flex items-center justify-center my-2">
-          <div className="flex">
+          <div className="flex items-center">
             <div className="flex flex-col items-center justify-between">
               <p>
                 <small>Days</small>

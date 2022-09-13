@@ -27,7 +27,7 @@ export default function PresaleDetails({ presaleInfo }) {
             <div className="">
               <div className="sm:w-96 bg-neutral-200 h-7 rounded-md dark:bg-gray-700">
                 <div
-                  className={`h-7 bg-gradient-to-r rounded-md from-purple-600 to-purple-400`}
+                  className={`h-7 rounded-md bg-purple-600`}
                   style={{ width: `${presaleInfo.scaleValue}%` }}
                 ></div>
               </div>

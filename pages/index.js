@@ -248,7 +248,7 @@ export default function Home() {
   };
 
   return (
-    <div className="w-screen max-w-max h-screen bg-gradient-to-r  from-gray-800 via-gray-800 to-gray-900 ">
+    <div className="w-screen max-w-max h-screen bg-gradient-to-tl  from-gray-800 via-gray-800 to-gray-900 ">
       <Header />
       <div className="w-full flex justify-end px-5 items-end">
         {allValid(presaleInfo) && <Dashboard presaleInfo={presaleInfo} />}

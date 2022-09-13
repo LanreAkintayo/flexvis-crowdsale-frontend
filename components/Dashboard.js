@@ -27,7 +27,7 @@ export default function Dashboard({ presaleInfo }) {
   return (
     <>
       {allValid(presaleInfo) && account && (
-        <div className="my-4 mx-4 bg-purple-200 p-2 w-80 text-purple-900 rounded-md">
+        <div className="my-4 mx-4 bg-gray-200 p-2 w-80 text-gray-900 rounded-md">
           <p>
             Account: {account.toString().substring(0, 5)}...
             {account.toString().substring(account.length - 6, account.length)}

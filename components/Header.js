@@ -69,28 +69,22 @@ export default function Header() {
             <Menu iconShape="square">
               <div className="text-xl text-white hover:text-green-700">
                 <MenuItem>
-                  <Link href="/"><p className="text-2xl">Home</p></Link>
+                  <Link href="/">
+                    <p className="text-2xl"></p>
+                  </Link>
                 </MenuItem>
               </div>
-              <MenuItem>
-                <Link href="/projects"><p className="text-2xl">Projects</p></Link>
-              </MenuItem>
-              <MenuItem>
-                <Link href="/launch"><p className="text-2xl">Get Funded</p></Link>
-              </MenuItem>
             </Menu>
           </ProSidebar>
         </div>
       )}
 
-      <nav className="flex items-center flex-col ss:flex-row w-full justify-between px-2 py-2 sm:px-4 sm:py-4 h-full text-white bg-zinc-800 ">
+      <nav className="flex items-center flex-col ss:flex-row w-full justify-between px-2 py-2 sm:px-4 sm:py-4 h-full text-white bg-gradient-to-tl  from-gray-800 via-gray-800 to-gray-900 ">
         <p className="text-2xl sm:text-3xl self-start ss:self-auto">
           <span className="text-orange-700">F</span>lexvis
         </p>
         <div className="flex items-center justify-end self-end ss:self-auto">
           <div className="flex justify-between items-center text-lg ">
-         
-
             <div className="text-white flex flex-col w-full sc:py-10 items-start">
               {/* <Button type="button" text="Connect Wallet" /> */}
               <div className="px-0">
