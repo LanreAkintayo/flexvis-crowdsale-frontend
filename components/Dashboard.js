@@ -13,6 +13,8 @@ import {
 import { fromWei, now, toWei, allValid } from "../utils/helper";
 
 export default function Dashboard({ presaleInfo }) {
+  const { switchNetwork, chain, account } = useChain();
+
   let dollarUSLocale = Intl.NumberFormat("en-US");
   // amount = dollarUSLocale.format(price).toString();
   const purchasedFlexvis = dollarUSLocale.format(
@@ -24,16 +26,11 @@ export default function Dashboard({ presaleInfo }) {
 
   return (
     <>
-      {allValid(presaleInfo) && (
+      {allValid(presaleInfo) && account && (
         <div className="my-4 mx-4 bg-purple-200 p-2 w-80 text-purple-900 rounded-md">
           <p>
-            Account: {presaleInfo.account.toString().substring(0, 5)}...
-            {presaleInfo.account
-              .toString()
-              .substring(
-                presaleInfo.account.length - 6,
-                presaleInfo.account.length
-              )}
+            Account: {account.toString().substring(0, 5)}...
+            {account.toString().substring(account.length - 6, account.length)}
           </p>
           <p>
             <span className="">Flexvis Balance: </span>{" "}

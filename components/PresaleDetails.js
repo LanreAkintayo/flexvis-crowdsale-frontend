@@ -11,7 +11,7 @@ export default function PresaleDetails({ presaleInfo }) {
     fromWei(presaleInfo?.weiRaised).toString()
   );
 
-  const millisecondsLeft = Number(presaleInfo.closingTime) * 1000 - now();
+  const millisecondsLeft = presaleInfo.hasEnded ? 0 : Number(presaleInfo.closingTime) * 1000 - now();
 
   return (
     <>

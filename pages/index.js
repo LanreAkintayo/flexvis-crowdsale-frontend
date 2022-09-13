@@ -23,6 +23,7 @@ import Link from "next/link";
 import Table from "../components/Table";
 import BuyModal from "../components/BuyModal";
 import { toWei, fromWei, time, sDuration } from "../utils/helper";
+import { RotateLoader, ClipLoader } from "react-spinners";
 import { useNotification } from "web3uikit";
 import { usePromiseTracker, trackPromise } from "react-promise-tracker";
 import { ethers } from "ethers";
@@ -33,6 +34,8 @@ import PresaleDetails from "../components/PresaleDetails";
 export default function Home() {
   const { isWeb3Enabled, chainId: chainIdHex, enableWeb3 } = useMoralis();
   const { switchNetwork, chain, account } = useChain();
+  const { mutate } = useSWRConfig();
+  const { withdrawPromiseInProgress } = usePromiseTracker();
 
   const dispatch = useNotification();
 
@@ -62,11 +65,7 @@ export default function Home() {
     isLoading: isLoadingWithdraw,
   } = useWeb3Contract();
 
-  const {
-    data: presaleInfo,
-    error,
-    mutate,
-  } = useSWR(
+  const { data: presaleInfo, error } = useSWR(
     () => (isWeb3Enabled ? "web3/presaleInfo" : null),
     async () => {
       const provider = await enableWeb3();
@@ -94,6 +93,9 @@ export default function Home() {
       const openingTime = await fCrowdsaleContract.openingTime();
       const closingTime = await fCrowdsaleContract.closingTime();
       const accountBalance = await fCrowdsaleContract.balanceOf(account);
+      const hasClosed = await fCrowdsaleContract.hasClosed();
+      const hasEnded = await fCrowdsaleContract.hasEnded();
+      const capReached = await fCrowdsaleContract.capReached();
       const percentRaised = (Number(weiRaised) / Number(cap)) * 100;
       const scaleValue = percentRaised > 100 ? 100 : Math.floor(percentRaised);
 
@@ -108,6 +110,9 @@ export default function Home() {
         percentRaised,
         scaleValue,
         flexvisAccountBalance,
+        hasClosed,
+        hasEnded,
+        capReached,
       };
     }
   );
@@ -168,22 +173,31 @@ export default function Home() {
     });
   };
 
-  const handlewithdrawToken = (investmentID) => {
-    console.log(investmentID);
-    withdrawToken({
-      params: {
-        abi: abi,
-        contractAddress: fCrowdsaleAddress,
-        functionName: "withdrawToken",
+  const handleWithdrawToken = () => {
+    if (
+      presaleInfo.hasClosed ||
+      presaleInfo.hasEnded ||
+      presaleInfo.capReached
+    ) {
+      withdrawToken({
         params: {
-          investmentID,
+          abi: abi,
+          contractAddress: fCrowdsaleAddress,
+          functionName: "withdrawTokens",
+          params: {
+            beneficiary: account,
+          },
         },
-      },
-      onSuccess: handleSuccess,
-      onError: (error) => {
-        handleFailure(error);
-      },
-    });
+        onSuccess: handleSuccess,
+        onError: (error) => {
+          handleFailure(error);
+        },
+      });
+    } else {
+      window.alert(
+        "You can only withdraw if the cap is reached or the presale has ended"
+      );
+    }
   };
 
   const handleSuccess = async (tx) => {
@@ -247,13 +261,43 @@ export default function Home() {
             <PresaleDetails presaleInfo={presaleInfo} />
             <div className="flex justify-center mt-4">
               <button
-                className="p-2 bg-purple-700 text-xl rounded-lg"
+                className="p-2  text-xl rounded-lg"
                 onClick={() => setCloseBuyModal(true)}
               >
-                Buy Token
+                <div className="flex w-full bg-purple-700 rounded-md items-center px-3 py-3">
+                    <p className="w-full">Buy Token</p>
+                  </div>
               </button>
-              <button className=" ml-8 p-2 text-xl bg-purple-700 rounded-lg">
-                Withdraw Token
+              <button
+                className=" ml-8 p-2 text-xl  rounded-lg disabled:opacity-50 disabled:cursor-not-allowed"
+                disabled={
+                  isFetchingWithdraw ||
+                  isLoadingWithdraw ||
+                  withdrawPromiseInProgress
+                }
+                onClick={handleWithdrawToken}
+              >
+                {(
+                  isFetchingWithdraw ||
+                  isLoadingWithdraw ||
+                  withdrawPromiseInProgress
+                ) ? (
+                  <div className="flex flex-col w-full justify-between bg-purple-700 rounded-md items-center px-3 py-3">
+                    <div className="flex">
+                      <ClipLoader color="#004d00" loading="true" size={30} />
+                      <p className="ml-2">
+                        {" "}
+                        {withdrawPromiseInProgress
+                          ? "Wait a few Seconds"
+                          : "Withdrawing Token"}
+                      </p>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="flex w-full bg-purple-700 rounded-md items-center px-3 py-3">
+                    <p className="w-full">Withdraw Token</p>
+                  </div>
+                )}
               </button>
             </div>
           </>
