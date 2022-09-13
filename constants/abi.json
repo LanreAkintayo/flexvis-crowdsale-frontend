@@ -2,28 +2,43 @@
   {
     "type": "constructor",
     "payable": false,
-    "inputs": [{ "type": "address", "name": "_flexvis" }]
-  },
-  {
-    "type": "event",
-    "anonymous": false,
-    "name": "InvestmentStarted",
     "inputs": [
-      { "type": "bytes16", "name": "investmentID", "indexed": true },
-      { "type": "address", "name": "investor", "indexed": true },
-      { "type": "uint256", "name": "investedAmount", "indexed": false },
-      { "type": "uint256", "name": "startDay", "indexed": true },
-      { "type": "uint256", "name": "investingDays", "indexed": false }
+      { "type": "uint256", "name": "rate" },
+      { "type": "address", "name": "wallet" },
+      { "type": "address", "name": "token" },
+      { "type": "uint256", "name": "openingTime" },
+      { "type": "uint256", "name": "closingTime" },
+      { "type": "uint256", "name": "cap" }
     ]
   },
   {
     "type": "event",
     "anonymous": false,
-    "name": "OwnershipTransferred",
+    "name": "TimedCrowdsaleExtended",
     "inputs": [
-      { "type": "address", "name": "previousOwner", "indexed": true },
-      { "type": "address", "name": "newOwner", "indexed": true }
+      { "type": "uint256", "name": "prevClosingTime", "indexed": false },
+      { "type": "uint256", "name": "newClosingTime", "indexed": false }
     ]
+  },
+  {
+    "type": "event",
+    "anonymous": false,
+    "name": "TokensPurchased",
+    "inputs": [
+      { "type": "address", "name": "purchaser", "indexed": true },
+      { "type": "address", "name": "beneficiary", "indexed": true },
+      { "type": "uint256", "name": "value", "indexed": false },
+      { "type": "uint256", "name": "amount", "indexed": false }
+    ]
+  },
+  {
+    "type": "function",
+    "name": "MAX_AMOUNT",
+    "constant": true,
+    "stateMutability": "view",
+    "payable": false,
+    "inputs": [],
+    "outputs": [{ "type": "uint256" }]
   },
   {
     "type": "function",
@@ -36,170 +51,113 @@
   },
   {
     "type": "function",
-    "name": "TREASURY",
+    "name": "balanceOf",
     "constant": true,
     "stateMutability": "view",
     "payable": false,
-    "inputs": [],
-    "outputs": [{ "type": "address" }]
+    "inputs": [{ "type": "address", "name": "account" }],
+    "outputs": [{ "type": "uint256" }]
   },
   {
     "type": "function",
-    "name": "allInvestment",
-    "constant": true,
-    "stateMutability": "view",
-    "payable": false,
-    "inputs": [{ "type": "address" }, { "type": "uint256" }],
-    "outputs": [
-      { "type": "bytes16", "name": "investmentID" },
-      { "type": "uint256", "name": "investedAmount" },
-      { "type": "uint256", "name": "startDay" },
-      { "type": "uint256", "name": "investingDays" },
-      { "type": "uint256", "name": "reward" }
-    ]
-  },
-  {
-    "type": "function",
-    "name": "allInvestors",
-    "constant": true,
-    "stateMutability": "view",
-    "payable": false,
-    "inputs": [{ "type": "uint256" }],
-    "outputs": [{ "type": "address" }]
-  },
-  {
-    "type": "function",
-    "name": "createInvestment",
+    "name": "buyTokens",
     "constant": false,
-    "payable": false,
-    "inputs": [
-      { "type": "uint256", "name": "amount" },
-      { "type": "uint256", "name": "startDay" },
-      { "type": "uint256", "name": "duration" }
-    ],
-    "outputs": [{ "type": "bytes16", "name": "investmentID" }]
-  },
-  {
-    "type": "function",
-    "name": "endInvestment",
-    "constant": false,
-    "payable": false,
-    "inputs": [{ "type": "bytes16", "name": "investmentID" }],
+    "stateMutability": "payable",
+    "payable": true,
+    "inputs": [{ "type": "address", "name": "beneficiary" }],
     "outputs": []
   },
   {
     "type": "function",
-    "name": "flexvis",
+    "name": "cap",
     "constant": true,
     "stateMutability": "view",
     "payable": false,
     "inputs": [],
-    "outputs": [{ "type": "address" }]
+    "outputs": [{ "type": "uint256" }]
   },
   {
     "type": "function",
-    "name": "generateID",
-    "constant": true,
-    "stateMutability": "pure",
-    "payable": false,
-    "inputs": [
-      { "type": "address", "name": "x" },
-      { "type": "uint256", "name": "y" },
-      { "type": "bytes1", "name": "z" }
-    ],
-    "outputs": [{ "type": "bytes16", "name": "b" }]
-  },
-  {
-    "type": "function",
-    "name": "getAllInvestments",
-    "constant": true,
-    "stateMutability": "view",
-    "payable": false,
-    "inputs": [{ "type": "address", "name": "investor" }],
-    "outputs": [
-      {
-        "type": "tuple[]",
-        "components": [
-          { "type": "bytes16", "name": "investmentID" },
-          { "type": "uint256", "name": "investedAmount" },
-          { "type": "uint256", "name": "startDay" },
-          { "type": "uint256", "name": "investingDays" },
-          { "type": "uint256", "name": "reward" }
-        ]
-      }
-    ]
-  },
-  {
-    "type": "function",
-    "name": "getAllInvestors",
+    "name": "capReached",
     "constant": true,
     "stateMutability": "view",
     "payable": false,
     "inputs": [],
-    "outputs": [{ "type": "address[]" }]
-  },
-  {
-    "type": "function",
-    "name": "getInvestmentInfo",
-    "constant": true,
-    "stateMutability": "view",
-    "payable": false,
-    "inputs": [
-      { "type": "address", "name": "_user" },
-      { "type": "bytes16", "name": "_investmentID" }
-    ],
-    "outputs": [
-      { "type": "uint256", "name": "investedAmount" },
-      { "type": "uint256", "name": "reward" },
-      { "type": "uint256", "name": "startDay" },
-      { "type": "uint256", "name": "investingDays" },
-      { "type": "uint256", "name": "count" }
-    ]
-  },
-  {
-    "type": "function",
-    "name": "hasInvestment",
-    "constant": true,
-    "stateMutability": "view",
-    "payable": false,
-    "inputs": [{ "type": "address", "name": "_user" }],
     "outputs": [{ "type": "bool" }]
   },
   {
     "type": "function",
-    "name": "initializeContract",
-    "constant": false,
-    "payable": false,
-    "inputs": [{ "type": "address", "name": "_treasury" }],
-    "outputs": []
-  },
-  {
-    "type": "function",
-    "name": "investmentCount",
+    "name": "closingTime",
     "constant": true,
     "stateMutability": "view",
     "payable": false,
-    "inputs": [{ "type": "address" }],
+    "inputs": [],
     "outputs": [{ "type": "uint256" }]
   },
   {
     "type": "function",
-    "name": "investments",
-    "constant": true,
-    "stateMutability": "view",
+    "name": "endCrowdsale",
+    "constant": false,
     "payable": false,
-    "inputs": [{ "type": "address" }, { "type": "bytes16" }],
-    "outputs": [
-      { "type": "bytes16", "name": "investmentID" },
-      { "type": "uint256", "name": "investedAmount" },
-      { "type": "uint256", "name": "startDay" },
-      { "type": "uint256", "name": "investingDays" },
-      { "type": "uint256", "name": "reward" }
-    ]
+    "inputs": [],
+    "outputs": []
   },
   {
     "type": "function",
-    "name": "owner",
+    "name": "extendTime",
+    "constant": false,
+    "payable": false,
+    "inputs": [{ "type": "uint256", "name": "duration" }],
+    "outputs": []
+  },
+  {
+    "type": "function",
+    "name": "hasClosed",
+    "constant": true,
+    "stateMutability": "view",
+    "payable": false,
+    "inputs": [],
+    "outputs": [{ "type": "bool" }]
+  },
+  {
+    "type": "function",
+    "name": "hasEnded",
+    "constant": true,
+    "stateMutability": "view",
+    "payable": false,
+    "inputs": [],
+    "outputs": [{ "type": "bool" }]
+  },
+  {
+    "type": "function",
+    "name": "isOpen",
+    "constant": true,
+    "stateMutability": "view",
+    "payable": false,
+    "inputs": [],
+    "outputs": [{ "type": "bool" }]
+  },
+  {
+    "type": "function",
+    "name": "openingTime",
+    "constant": true,
+    "stateMutability": "view",
+    "payable": false,
+    "inputs": [],
+    "outputs": [{ "type": "uint256" }]
+  },
+  {
+    "type": "function",
+    "name": "rate",
+    "constant": true,
+    "stateMutability": "view",
+    "payable": false,
+    "inputs": [],
+    "outputs": [{ "type": "uint256" }]
+  },
+  {
+    "type": "function",
+    "name": "token",
     "constant": true,
     "stateMutability": "view",
     "payable": false,
@@ -208,15 +166,16 @@
   },
   {
     "type": "function",
-    "name": "renounceOwnership",
-    "constant": false,
+    "name": "wallet",
+    "constant": true,
+    "stateMutability": "view",
     "payable": false,
     "inputs": [],
-    "outputs": []
+    "outputs": [{ "type": "address" }]
   },
   {
     "type": "function",
-    "name": "totalInvested",
+    "name": "weiRaised",
     "constant": true,
     "stateMutability": "view",
     "payable": false,
@@ -225,10 +184,10 @@
   },
   {
     "type": "function",
-    "name": "transferOwnership",
+    "name": "withdrawTokens",
     "constant": false,
     "payable": false,
-    "inputs": [{ "type": "address", "name": "newOwner" }],
+    "inputs": [{ "type": "address", "name": "beneficiary" }],
     "outputs": []
   }
 ]
