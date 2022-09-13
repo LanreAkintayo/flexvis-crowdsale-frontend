@@ -97,7 +97,6 @@ export default function Home() {
       const percentRaised = (Number(weiRaised) / Number(cap)) * 100;
       const scaleValue = percentRaised > 100 ? 100 : Math.floor(percentRaised);
 
-      console.log(accountBalance.toString());
       return {
         account,
         cap,
@@ -116,7 +115,7 @@ export default function Home() {
   useEffect(() => {
     console.log("Presale Info: ", presaleInfo);
 
-    console.log("Is it valid: ", allValid(presaleInfo))
+    console.log("Is it valid: ", allValid(presaleInfo));
   }, [presaleInfo]);
 
   const handlecloseBuyModal = () => {
@@ -201,7 +200,6 @@ export default function Home() {
     // const updatedInvestments = await fCrowdsaleContract.getAllInvestments(account)
 
     await mutate("web3/presaleInfo");
-    await mutate("web3/flexvisBalance");
     setCloseBuyModal(false);
 
     dispatch({
@@ -223,20 +221,24 @@ export default function Home() {
   };
 
   const allValid = (data) => {
-    if ([null, undefined, {}].includes(data)){
-      return false
+    if ([null, undefined, {}].includes(data)) {
+      return false;
     }
-  
-    return Object.values(data).every(
-      (item) => ![null, undefined, {}].includes(item)
-    )
-  }
+
+    return Object.values(data).every((item) => {
+      if ([null, undefined, {}].includes(item)) {
+        return false;
+      } else {
+        return true;
+      }
+    });
+  };
 
   return (
     <div className="w-screen max-w-max h-screen bg-gradient-to-r  from-gray-800 via-gray-800 to-gray-900 ">
       <Header />
       <div className="w-full flex justify-end px-5 items-end">
-        { allValid(presaleInfo) && <Dashboard presaleInfo={presaleInfo} />}
+        {allValid(presaleInfo) && <Dashboard presaleInfo={presaleInfo} />}
       </div>
       <section className="m-4 p-2 flex flex-col items-center text-white">
         {allValid(presaleInfo) && (

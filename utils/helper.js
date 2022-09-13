@@ -8,6 +8,20 @@ export const fromWei = (value) => {
     return ethers.utils.formatEther(value.toString())
 }
 
+export const allValid = (data) => {
+  if ([null, undefined, {}].includes(data)) {
+    return false;
+  }
+
+  return Object.values(data).every((item) => {
+    if ([null, undefined, {}].includes(item)) {
+      return false;
+    } else {
+      return true;
+    }
+  });
+};
+
 export const sDuration = {
   seconds: function (val) {
     return val;
