@@ -17,15 +17,15 @@ export default function PresaleDetails({ presaleInfo }) {
     <>
       {allValid(presaleInfo) && (
         <div>
-          <h1 className="text-4xl text-center">
+          <h1 className="lg:text-4xl sm:text-3xl text-2xl px-2 text-center">
             Participate in Flexvis Presale and get yours at a cheaper rate.
           </h1>
-          <p className="text-3xl py-8 text-center">
+          <p className="sc:text-3xl text-xl px-2 py-8 text-center">
             {formattedCap} BNB Target cap, {formattedAmountRaised} BNB Raised
           </p>
           <div className="w-full flex justify-center items-center">
             <div className="">
-              <div className="w-96 bg-neutral-200 h-7 rounded-md dark:bg-gray-700">
+              <div className="sm:w-96 bg-neutral-200 h-7 rounded-md dark:bg-gray-700">
                 <div
                   className={`h-7 bg-gradient-to-r rounded-md from-purple-600 to-purple-400`}
                   style={{ width: `${presaleInfo.scaleValue}%` }}
