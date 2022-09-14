@@ -3,7 +3,6 @@ import TimerCountdown from "./TimerCountdown";
 
 export default function PresaleDetails({ presaleInfo }) {
   let dollarUSLocale = Intl.NumberFormat("en-US");
-  // amount = dollarUSLocale.format(price).toString();
   const formattedCap = dollarUSLocale.format(
     fromWei(presaleInfo?.cap).toString()
   );
@@ -11,7 +10,7 @@ export default function PresaleDetails({ presaleInfo }) {
     fromWei(presaleInfo?.weiRaised).toString()
   );
 
-  const millisecondsLeft = presaleInfo.hasEnded ? 0 : Number(presaleInfo.closingTime) * 1000 - now();
+  const millisecondsLeft = presaleInfo.hasEnded || presaleInfo.capReached || presaleInfo.hasClosed ? 0 : Number(presaleInfo.closingTime) * 1000 - now();
 
   return (
     <>
